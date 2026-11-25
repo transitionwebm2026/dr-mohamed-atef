@@ -56,6 +56,7 @@ export const en: Dictionary = {
 
   common: {
     skipToContent: 'Skip to main content',
+    close: 'Close',
     bookNow: 'Book Now',
     bookConsultation: 'Book Consultation',
     ourServices: 'Our Services',
@@ -108,6 +109,7 @@ export const en: Dictionary = {
     closeMenu: 'Close menu',
     switchLanguage: 'التبديل إلى العربية',
     logoTagline: 'Colon & Rectal Surgery Consultant',
+    menu: 'Menu',
   },
 
   floating: {
@@ -171,6 +173,7 @@ export const en: Dictionary = {
         'Assistant Professor of Surgical Oncology, National Cancer Institute',
       ],
       cta: 'More about the doctor',
+      watch: 'Watch the introduction',
     },
     stats: {
       title: 'Numbers that reflect trust',
@@ -265,6 +268,7 @@ export const en: Dictionary = {
     timeline: {
       title: 'Milestones that built the expertise',
       description: 'An academic and professional journey in surgical oncology at Cairo University and the National Cancer Institute.',
+      hint: 'Keep scrolling to explore the journey',
     },
     promo: {
       title: 'The patient journey with us — from diagnosis to recovery',
@@ -277,6 +281,9 @@ export const en: Dictionary = {
     certifications: {
       title: 'Academic and professional accreditation',
       description: 'Academic qualifications and memberships in leading national and international surgical societies.',
+      previous: 'Previous credential',
+      next: 'Next credential',
+      region: 'Credentials and memberships',
     },
     achievements: {
       title: 'Experience proven by results',

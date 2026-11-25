@@ -55,21 +55,27 @@ export default async function VideosPage({ params }: LangParams) {
         ]}
       />
 
-      <section className="section-y bg-paper">
+      <section className="section-y bg-white">
         <div className="container-x">
           <Reveal>
-            <SectionHeading title={copy.title} description={copy.description} />
+            <SectionHeading align="split" title={copy.title} description={copy.description} />
           </Reveal>
-          <ul className="mx-auto mt-14 grid max-w-5xl grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3 lg:gap-8">
+          {/* Arched reels; the middle column sits lower for a staggered rhythm */}
+          <ul className="mx-auto mt-14 grid max-w-5xl grid-cols-2 gap-x-4 gap-y-8 sm:gap-x-6 md:grid-cols-3 md:pb-16 lg:gap-x-8 lg:gap-y-12">
             {videos.map((video, i) => (
-              <Reveal as="li" variant="zoom" key={video.id} delay={(i % 3) * 0.08}>
+              <Reveal
+                as="li"
+                variant="zoom"
+                key={video.id}
+                delay={(i % 3) * 0.08}
+                className={i % 3 === 1 ? 'md:translate-y-16' : undefined}
+              >
                 <VideoFacade
                   video={video}
                   orientation="portrait"
                   playLabel={t(dict.common.playVideo, { title: video.title })}
                   fallbackHref={videoChannel}
                   fallbackLabel={t(dict.common.openOnYoutube, { title: video.title })}
-                  className="shadow-card"
                   sizes="(min-width: 768px) 30vw, 48vw"
                 />
               </Reveal>

@@ -30,10 +30,10 @@ export function SocialLinks({ labels, variant = 'footer', className }: SocialLin
               rel="noopener noreferrer"
               aria-label={labels[network]}
               className={cn(
-                'grid size-10 place-items-center rounded-full transition duration-300',
+                'grid size-10 place-items-center rounded-full ring-1 ring-inset transition duration-300 hover:-translate-y-0.5 hover:bg-gold hover:text-ink hover:ring-gold',
                 variant === 'hero'
-                  ? 'border border-white/25 bg-white/10 text-white backdrop-blur-md hover:border-gold hover:bg-gold hover:text-ink'
-                  : 'border border-white/10 bg-white/5 text-white/80 hover:border-gold hover:bg-gold hover:text-ink',
+                  ? 'bg-white/10 text-white ring-white/20 backdrop-blur-md'
+                  : 'text-white/80 ring-white/15',
               )}
             >
               <Icon className="size-[1.05rem]" />

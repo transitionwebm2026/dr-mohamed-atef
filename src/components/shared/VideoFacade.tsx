@@ -59,9 +59,9 @@ export function VideoFacade({
   };
 
   const frame = cn(
-    'card-smart group relative isolate block w-full overflow-hidden bg-ink',
+    'group relative isolate block w-full overflow-hidden bg-ink',
     aspectClass[orientation],
-    orientation === 'cinema' ? '' : 'rounded-3xl',
+    orientation === 'portrait' ? 'arch' : orientation === 'landscape' ? 'rounded-[1.75rem]' : '',
     className,
   );
 
@@ -100,34 +100,54 @@ export function VideoFacade({
             : 'bg-linear-to-t from-ink/80 via-ink/25 to-ink/10',
         )}
       />
+      {/* Play control: a glass disc inside the logo's ring — fills gold on hover */}
       <span
         aria-hidden="true"
         className={cn(
-          'absolute top-1/2 left-1/2 grid -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-gold text-ink shadow-gold transition duration-500 group-hover:scale-110',
-          portrait ? 'size-14' : 'size-16 sm:size-20',
+          'absolute top-1/2 left-1/2 grid -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-white/15 text-white backdrop-blur-md transition duration-500 group-hover:bg-gold group-hover:text-ink',
+          portrait ? 'size-16' : 'size-18 sm:size-22',
         )}
       >
-        <span className="absolute inset-0 animate-pulse-ring rounded-full bg-gold/60" />
+        <svg viewBox="0 0 48 48" fill="none" className="absolute inset-0 size-full -rotate-90 transition-transform duration-700 group-hover:rotate-90">
+          <circle cx="24" cy="24" r="22.5" strokeWidth="1.25" vectorEffect="non-scaling-stroke" className="stroke-white/50" />
+          <circle
+            cx="24"
+            cy="24"
+            r="22.5"
+            pathLength={100}
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeDasharray="22 100"
+            className="stroke-gold"
+          />
+        </svg>
         <Play className={cn('relative translate-x-0.5 fill-current', portrait ? 'size-5' : 'size-6 sm:size-7')} />
       </span>
 
       {showMeta ? (
-        <>
-          <span className="absolute start-4 top-4 rounded-full bg-silver px-3 py-1 text-xs font-bold text-ink">
-            {video.topic}
+        // Caption on a plate of liquid glass floating over the thumbnail
+        // Caption on a small plate of liquid glass — compact on phones so the picture stays the hero
+        <span className={cn('absolute inset-x-0 bottom-0', portrait ? 'p-2 sm:p-2.5' : 'p-2.5 sm:p-4')}>
+          <span className="relative block">
+            <span aria-hidden="true" className="liquid-glass absolute inset-0 rounded-[1.1rem] sm:rounded-[1.4rem]" />
+            <span className={cn('relative flex flex-col items-start gap-1.5 text-start sm:gap-2', portrait ? 'p-2.5 sm:p-4' : 'p-3 sm:p-5 lg:p-6')}>
+              <span className="flex items-center gap-1.5 text-[0.6rem] font-bold sm:gap-2 sm:text-xs">
+                <span className="rounded-full bg-gold px-2 py-0.5 text-ink sm:px-2.5 sm:py-1">{video.topic}</span>
+                <span className="rounded-full bg-white/15 px-2 py-0.5 text-white sm:px-2.5 sm:py-1" translate="no">
+                  {video.duration}
+                </span>
+              </span>
+              <span
+                className={cn(
+                  'line-clamp-2 font-bold text-white',
+                  portrait ? 'text-xs leading-snug sm:text-[0.95rem]' : 'text-sm sm:text-lg lg:text-xl',
+                )}
+              >
+                {video.title}
+              </span>
+            </span>
           </span>
-          <span className="absolute end-4 top-4 rounded-full bg-ink/70 px-2.5 py-1 text-xs font-bold text-white backdrop-blur" translate="no">
-            {video.duration}
-          </span>
-          <span
-            className={cn(
-              'absolute inset-x-0 bottom-0 p-5 text-start font-bold text-white',
-              portrait ? 'text-base leading-snug' : 'text-lg sm:text-xl',
-            )}
-          >
-            {video.title}
-          </span>
-        </>
+        </span>
       ) : null}
     </>
   );

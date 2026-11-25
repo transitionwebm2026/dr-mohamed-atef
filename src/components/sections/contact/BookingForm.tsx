@@ -112,16 +112,17 @@ export function BookingForm({ labels, intlLocale, whatsappNumber, serviceGroups,
 
   const fieldClass = (field: FieldName | 'notes') =>
     cn(
-      'block w-full rounded-2xl border bg-paper/60 px-4 text-ink transition duration-200 placeholder:text-ink-500 focus:bg-white focus:outline-none focus:ring-4',
+      // Frosted glass fields: translucent white with a lit top edge, clearer when focused
+      'block w-full rounded-2xl border bg-white/55 px-4 text-ink shadow-[inset_0_1px_0_rgb(255_255_255/0.95),inset_0_-1px_0_rgb(198_198_196/0.35),0_12px_26px_-20px_rgb(58_58_56/0.5)] transition duration-200 placeholder:text-ink-500 focus:bg-white/90 focus:outline-none focus:ring-4',
       field !== 'notes' && errors[field]
         ? 'border-red-600 focus:border-red-600 focus:ring-red-600/15'
-        : 'border-silver focus:border-gold focus:ring-gold/25',
+        : 'border-white/80 hover:border-white hover:bg-white/70 focus:border-gold focus:ring-gold/25',
     );
 
   const describedBy = (field: FieldName) => (errors[field] ? `${id(field)}-error` : undefined);
 
   return (
-    <form ref={formRef} onSubmit={onSubmit} noValidate className="grid gap-5 sm:grid-cols-2">
+    <form ref={formRef} onSubmit={onSubmit} noValidate className="grid grid-cols-1 gap-5 [transform-style:preserve-3d] sm:grid-cols-2">
       {hasErrors ? (
         <p role="alert" className="flex items-center gap-2 rounded-2xl bg-red-50 px-4 py-3 text-sm font-bold text-red-700 sm:col-span-2">
           <CircleAlert aria-hidden="true" className="size-4 shrink-0" />
@@ -267,13 +268,16 @@ export function BookingForm({ labels, intlLocale, whatsappNumber, serviceGroups,
         />
       </Field>
 
-      <div className="sm:col-span-2">
+      {/* The send button floats above the glass */}
+      <div className="[transform:translateZ(32px)] sm:col-span-2">
         <button
           type="submit"
-          className="btn-shine inline-flex h-14 w-full items-center justify-center gap-3 rounded-full bg-whatsapp px-8 text-base font-extrabold text-ink shadow-[0_14px_32px_-12px_rgb(37_211_102/0.8)] transition duration-300 hover:-translate-y-0.5 hover:brightness-95 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold active:scale-[0.99]"
+          className="group/btn inline-flex h-15 w-full items-center justify-between gap-3 rounded-full bg-whatsapp ps-7 pe-2 text-base font-extrabold text-ink transition duration-300 hover:brightness-95 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold active:translate-y-px"
         >
-          <WhatsAppIcon className="size-6" />
           {labels.submit}
+          <span aria-hidden="true" className="grid size-11 place-items-center rounded-full bg-ink text-white transition-transform duration-500 group-hover/btn:scale-105">
+            <WhatsAppIcon className="size-5" />
+          </span>
         </button>
         <p className="mt-4 flex items-center justify-center gap-2 text-center text-xs text-ink-500">
           <ShieldCheck aria-hidden="true" className="size-4 shrink-0 text-gold-600" />

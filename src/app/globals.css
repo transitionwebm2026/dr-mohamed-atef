@@ -3,6 +3,8 @@
 /* ─── Design tokens ─────────────────────────────────────────────── */
 @theme inline {
   --font-sans: var(--font-almarai), ui-sans-serif, system-ui, 'Segoe UI', Tahoma, sans-serif;
+  /* Display face for headings — geometric, wide Arabic + Latin */
+  --font-display: var(--font-alexandria), var(--font-almarai), ui-sans-serif, system-ui, sans-serif;
 }
 
 @theme {
@@ -27,21 +29,30 @@
 
   --color-whatsapp: #25d366;
 
-  --shadow-card: 0 1px 2px rgb(38 38 36 / 0.05), 0 12px 32px -18px rgb(38 38 36 / 0.24);
-  --shadow-card-hover: 0 2px 6px rgb(38 38 36 / 0.06), 0 30px 50px -24px rgb(38 38 36 / 0.36);
-  --shadow-gold: 0 14px 32px -12px rgb(255 183 1 / 0.65);
+  --shadow-float: 0 1px 2px rgb(38 38 36 / 0.06), 0 18px 40px -20px rgb(38 38 36 / 0.35);
+  --shadow-gold: 0 14px 30px -14px rgb(255 183 1 / 0.7);
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
 
   --animate-hero-in: hero-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
   --animate-pulse-ring: pulse-ring 2.6s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --animate-spin-slow: ring-spin 40s linear infinite;
 
+  @keyframes ring-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Hero copy rises in (pure CSS — runs before hydration, no JS needed) */
   @keyframes hero-in {
     from {
       opacity: 0;
-      transform: translateY(22px);
+      transform: translateY(28px);
     }
     to {
       opacity: 1;
-      transform: none;
+      transform: translateY(0);
     }
   }
 
@@ -62,8 +73,8 @@
 @layer base {
   html {
     scroll-behavior: smooth;
-    /* Offset in-page anchors (e.g. /services/#hernia-surgery) below the fixed navbar */
-    scroll-padding-top: 5rem;
+    /* Offset in-page anchors (e.g. /services/#hernia-surgery) below the floating navbar */
+    scroll-padding-top: 6rem;
     -webkit-tap-highlight-color: transparent;
   }
 
@@ -74,6 +85,17 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+  }
+
+  /* During a page transition the new hero waits under the curtain, then plays as it lifts */
+  html[data-transitioning] .animate-hero-in {
+    animation-play-state: paused;
   }
 
   ::selection {
@@ -104,6 +126,45 @@
   }
 }
 
+/* Autoplay progress (reviews) — referenced from inline styles, so kept outside @theme */
+@keyframes progress-fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* Ribbon marquee — the track holds 4 copies and moves by one copy; RTL flips via --marquee-to */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(var(--marquee-to, -25%));
+  }
+}
+
+/* Slow drift for the blurred light behind the glass wall (reviews) */
+@keyframes blob-drift {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(7%, 9%, 0) scale(1.15);
+  }
+}
+
+@keyframes float-y {
+  from {
+    transform: translate3d(0, -14px, 0);
+  }
+  to {
+    transform: translate3d(0, 14px, 0);
+  }
+}
+
 /* ─── Layout utilities ──────────────────────────────────────────── */
 @utility container-x {
   width: 100%;
@@ -119,27 +180,80 @@
   }
 }
 
+/* Section rhythm. `overflow: clip` (not hidden) keeps sticky children working. */
 @utility section-y {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
   padding-block: 4.5rem;
 
   @media (width >= 64rem) {
-    padding-block: 7rem;
+    padding-block: 7.5rem;
   }
 }
 
-/* Subtle dotted texture for dark bands */
-@utility bg-dots {
-  background-image: radial-gradient(rgb(255 255 255 / 0.07) 1px, transparent 1px);
-  background-size: 22px 22px;
+/*
+ * Shape language
+ * - `arch`   portrait media (videos, doctor portrait): a full round top, soft base
+ * - `bubble` testimonials: a speech bubble whose tail corner points at the speaker
+ */
+/* Top radii are 50% wide × (half the width, as a % of the height) tall, so the curve is a true
+   semicircle without the browser shrinking the base radii. Default fits 9:16; set
+   `[--arch-top:40%]` for 4:5. */
+@utility arch {
+  border-radius: 50% 50% 1.75rem 1.75rem / var(--arch-top, 28.125%) var(--arch-top, 28.125%) 1.75rem 1.75rem;
+}
+
+@utility bubble {
+  border-radius: 1.75rem;
+  border-end-start-radius: 0.35rem;
+}
+
+/* Outlined numerals for sequence markers (stroke colour via --outline, gold by default) */
+@utility text-outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--outline, var(--color-gold));
+}
+
+/* Thin animated underline for text links — grows from the reading start */
+@utility link-sweep {
+  background-image: linear-gradient(var(--color-gold), var(--color-gold));
+  background-repeat: no-repeat;
+  background-size: 0% 2px;
+  background-position: 100% 100%;
+  transition: background-size 0.45s var(--ease-out-soft);
+
+  &:where([dir='ltr'] *, [dir='ltr']) {
+    background-position: 0% 100%;
+  }
+  &:hover,
+  &:focus-visible,
+  :where(.group):hover &,
+  :where(.group):focus-within & {
+    background-size: 100% 2px;
+  }
 }
 
 /*
- * Smart card hover: a soft gold spotlight + a glowing gold border that follow the cursor.
- * --mx / --my are set by <SpotlightTracker /> (one delegated pointermove listener).
+ * Liquid glass: frosted + saturated backdrop, a specular top edge, a rim of light that is
+ * brightest at the top-start corner (masked 1px border), and a sheen that sweeps across once
+ * when the closest `.group` is hovered. Defaults are tuned for dark, lit backgrounds; the
+ * modifiers below only swap the custom properties, so they compose in any class order.
  */
-@utility card-smart {
-  position: relative;
-  isolation: isolate;
+@utility liquid-glass {
+  background: var(
+    --glass-fill,
+    linear-gradient(140deg, rgb(255 255 255 / 0.2) 0%, rgb(255 255 255 / 0.07) 38%, rgb(255 255 255 / 0.03) 62%, rgb(255 255 255 / 0.1) 100%)
+  );
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  backdrop-filter: blur(18px) saturate(180%);
+  box-shadow: var(
+    --glass-shadow,
+    inset 0 1px 0 0 rgb(255 255 255 / 0.5),
+    inset 0 -1px 0 0 rgb(255 255 255 / 0.08),
+    inset 0 0 32px 0 rgb(255 255 255 / 0.06),
+    0 40px 70px -30px rgb(0 0 0 / 0.65)
+  );
 
   &::before,
   &::after {
@@ -148,53 +262,77 @@
     inset: 0;
     border-radius: inherit;
     pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.45s ease;
   }
-  /* spotlight fill */
+  /* rim light */
   &::before {
-    z-index: 1;
-    background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 0%), rgb(255 183 1 / 0.13), transparent 45%);
-  }
-  /* glowing border (masked ring) */
-  &::after {
-    z-index: 2;
-    padding: 1.5px;
-    background: radial-gradient(240px circle at var(--mx, 50%) var(--my, 0%), rgb(255 183 1 / 0.95), transparent 55%);
+    padding: 1px;
+    background: linear-gradient(
+      var(--glass-rim-angle, 150deg),
+      var(--glass-rim-1, rgb(255 255 255 / 0.75)),
+      var(--glass-rim-2, rgb(255 255 255 / 0.12)) 30%,
+      var(--glass-rim-3, rgb(255 255 255 / 0.02)) 60%,
+      var(--glass-rim-4, rgb(255 183 1 / 0.45))
+    );
     -webkit-mask:
       linear-gradient(#000 0 0) content-box,
       linear-gradient(#000 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
   }
-  &:hover::before,
-  &:hover::after,
-  &:focus-within::after {
-    opacity: 1;
+  &:where([dir='rtl'] *) {
+    --glass-rim-angle: -150deg;
+  }
+  /* sheen */
+  &::after {
+    background: linear-gradient(115deg, transparent 38%, var(--glass-sheen, rgb(255 255 255 / 0.18)) 49%, transparent 60%);
+    background-size: 260% 100%;
+    background-position: 130% 0;
+    transition: background-position 1.2s var(--ease-out-soft);
+  }
+  :where(.group):hover &::after {
+    background-position: -30% 0;
   }
 }
 
-/* Light sweep across buttons on hover */
-@utility btn-shine {
-  position: relative;
-  overflow: hidden;
-  isolation: isolate;
+/* Gold-tinted glass for dark backgrounds */
+@utility liquid-glass-gold {
+  --glass-fill: linear-gradient(
+    140deg,
+    rgb(255 207 77 / 0.32) 0%,
+    rgb(255 183 1 / 0.12) 40%,
+    rgb(255 183 1 / 0.06) 62%,
+    rgb(255 207 77 / 0.2) 100%
+  );
+}
 
-  &::before {
-    content: '';
-    position: absolute;
-    inset-block: 0;
-    left: -60%;
-    width: 35%;
-    z-index: -1;
-    pointer-events: none;
-    transform: skewX(-20deg);
-    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.5), transparent);
-  }
-  &:hover::before {
-    left: 135%;
-    transition: left 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-  }
+/* Light glass for white / paper backgrounds lit by the gold & silver stage */
+@utility liquid-glass-light {
+  --glass-fill: linear-gradient(
+    140deg,
+    rgb(255 255 255 / 0.78) 0%,
+    rgb(255 255 255 / 0.45) 42%,
+    rgb(255 255 255 / 0.32) 68%,
+    rgb(255 255 255 / 0.6) 100%
+  );
+  --glass-shadow:
+    inset 0 1px 0 0 rgb(255 255 255 / 1), inset 0 -1px 0 0 rgb(198 198 196 / 0.35),
+    inset 0 0 28px 0 rgb(255 255 255 / 0.35), 0 34px 60px -34px rgb(58 58 56 / 0.42), 0 6px 16px -8px rgb(58 58 56 / 0.14);
+  --glass-rim-1: rgb(255 255 255 / 1);
+  --glass-rim-2: rgb(255 255 255 / 0.55);
+  --glass-rim-3: rgb(198 198 196 / 0.4);
+  --glass-rim-4: rgb(255 183 1 / 0.6);
+  --glass-sheen: rgb(255 255 255 / 0.7);
+}
+
+/* Gold-tinted light glass (selected / highlighted items on light backgrounds) */
+@utility liquid-glass-gold-light {
+  --glass-fill: linear-gradient(
+    140deg,
+    rgb(255 207 77 / 0.62) 0%,
+    rgb(255 183 1 / 0.3) 45%,
+    rgb(255 255 255 / 0.38) 75%,
+    rgb(255 207 77 / 0.45) 100%
+  );
 }
 
 @utility no-scrollbar {

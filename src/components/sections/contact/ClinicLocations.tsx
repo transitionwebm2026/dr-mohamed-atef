@@ -37,7 +37,7 @@ export function ClinicLocations({ clinics, email, labels }: ClinicLocationsProps
 
   return (
     <div className="flex h-full flex-col gap-6">
-      <div role="group" aria-label={labels.branches} className="grid grid-cols-2 gap-2 rounded-2xl border border-silver bg-white p-1.5">
+      <div role="group" aria-label={labels.branches} className="grid grid-cols-2 gap-1 rounded-[1.6rem] bg-white p-1">
         {clinics.map((c) => {
           const selected = c.id === clinic.id;
           return (
@@ -47,8 +47,8 @@ export function ClinicLocations({ clinics, email, labels }: ClinicLocationsProps
               aria-pressed={selected}
               onClick={() => setActiveId(c.id)}
               className={cn(
-                'rounded-xl px-3 py-3 text-sm font-bold transition duration-300',
-                selected ? 'bg-gold text-ink shadow-gold' : 'text-ink-700 hover:bg-silver/30',
+                'min-h-11 rounded-[1.35rem] px-3 py-2.5 text-sm leading-snug font-bold transition duration-300',
+                selected ? 'bg-ink text-white' : 'text-ink-500 hover:text-ink',
               )}
             >
               {c.name}
@@ -57,7 +57,7 @@ export function ClinicLocations({ clinics, email, labels }: ClinicLocationsProps
         })}
       </div>
 
-      <div className="relative aspect-[4/3] overflow-hidden rounded-3xl border border-silver bg-paper shadow-card">
+      <div className="relative aspect-[4/3] overflow-hidden rounded-[1.75rem] bg-white">
         <iframe
           key={clinic.id}
           src={clinic.mapSrc}
@@ -69,9 +69,9 @@ export function ClinicLocations({ clinics, email, labels }: ClinicLocationsProps
         />
       </div>
 
-      <dl className="grid gap-4 card-smart rounded-3xl border border-silver bg-white p-6 shadow-card sm:p-7">
-        <div className="flex gap-4">
-          <dt className="grid size-11 shrink-0 place-items-center rounded-xl bg-gold text-ink">
+      <dl className="grid divide-y divide-ink/10 border-y border-ink/10">
+        <div className="flex gap-4 py-5">
+          <dt className="grid size-11 shrink-0 place-items-center rounded-full text-ink ring-1 ring-inset ring-gold">
             <MapPin aria-hidden="true" className="size-5" />
             <span className="sr-only">{labels.address}</span>
           </dt>
@@ -89,8 +89,8 @@ export function ClinicLocations({ clinics, email, labels }: ClinicLocationsProps
             </a>
           </dd>
         </div>
-        <div className="flex gap-4">
-          <dt className="grid size-11 shrink-0 place-items-center rounded-xl bg-gold text-ink">
+        <div className="flex gap-4 py-5">
+          <dt className="grid size-11 shrink-0 place-items-center rounded-full text-ink ring-1 ring-inset ring-gold">
             <Clock aria-hidden="true" className="size-5" />
             <span className="sr-only">{labels.hours}</span>
           </dt>
@@ -99,21 +99,21 @@ export function ClinicLocations({ clinics, email, labels }: ClinicLocationsProps
             <p className="mt-0.5 font-bold text-ink">{clinic.hours}</p>
           </dd>
         </div>
-        <div className="flex gap-4">
-          <dt className="grid size-11 shrink-0 place-items-center rounded-xl bg-gold text-ink">
+        <div className="flex gap-4 py-5">
+          <dt className="grid size-11 shrink-0 place-items-center rounded-full text-ink ring-1 ring-inset ring-gold">
             <Phone aria-hidden="true" className="size-5" />
             <span className="sr-only">{labels.phone}</span>
           </dt>
           <dd className="self-center">
             <p className="text-xs font-bold text-ink-500">{labels.phone}</p>
-            <a href={clinic.phoneHref} className="mt-0.5 inline-block font-bold text-ink hover:text-gold-ink" dir="ltr">
+            <a href={clinic.phoneHref} className="mt-0.5 inline-block font-bold whitespace-nowrap text-ink hover:text-gold-ink" dir="ltr">
               {clinic.phoneDisplay}
             </a>
           </dd>
         </div>
         {email ? (
-          <div className="flex gap-4">
-            <dt className="grid size-11 shrink-0 place-items-center rounded-xl bg-gold text-ink">
+          <div className="flex gap-4 py-5">
+            <dt className="grid size-11 shrink-0 place-items-center rounded-full text-ink ring-1 ring-inset ring-gold">
               <Mail aria-hidden="true" className="size-5" />
               <span className="sr-only">{labels.email}</span>
             </dt>

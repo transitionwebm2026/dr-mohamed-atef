@@ -1,6 +1,7 @@
-import { BadgeCheck, Quote, Star } from 'lucide-react';
+import { Star } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
+/** Shared review pieces — used by the home reviews slider and the reviews page glass wall. */
 export interface ReviewCardData {
   id: string;
   name: string;
@@ -9,60 +10,41 @@ export interface ReviewCardData {
   text: string;
 }
 
-interface ReviewCardProps {
-  review: ReviewCardData;
-  verifiedLabel: string;
-  ratingLabel: string;
-  className?: string;
-}
-
-export function StarRating({ rating, label }: { rating: number; label: string }) {
+export function StarRating({ rating, label, className }: { rating: number; label: string; className?: string }) {
   return (
-    <div className="flex items-center gap-0.5" role="img" aria-label={label}>
+    <div className={cn('flex items-center gap-0.5', className)} role="img" aria-label={label}>
       {Array.from({ length: 5 }, (_, i) => (
         <Star
           key={i}
           aria-hidden="true"
-          className={cn('size-[1.1rem]', i < rating ? 'fill-gold text-gold' : 'fill-silver-100 text-silver')}
+          className={cn('size-4', i < rating ? 'fill-gold text-gold' : 'fill-transparent text-silver')}
+          strokeWidth={1.5}
         />
       ))}
     </div>
   );
 }
 
-export function ReviewCard({ review, verifiedLabel, ratingLabel, className }: ReviewCardProps) {
+/** Quote mark used on glass reviews (add `rtl:-scale-x-100` to mirror in RTL). */
+export function QuoteMark({ className }: { className?: string }) {
   return (
-    <figure
+    <svg aria-hidden="true" viewBox="0 0 64 48" className={className}>
+      <path d="M0 48V28C0 12 8 3 24 0l3 7C18 10 14 16 14 24h12v24H0Zm38 0V28C38 12 46 3 62 0l2 7c-9 3-13 9-13 17h13v24H38Z" />
+    </svg>
+  );
+}
+
+/** Avatar initial inside a ring — the "speaker" under a review bubble. */
+export function ReviewerAvatar({ name, className }: { name: string; className?: string }) {
+  return (
+    <span
+      aria-hidden="true"
       className={cn(
-        'relative flex h-full flex-col card-smart rounded-3xl border border-silver bg-white p-7 shadow-card transition duration-500 hover:shadow-card-hover',
+        'grid size-11 shrink-0 place-items-center rounded-full bg-ink font-display text-base font-semibold text-gold ring-2 ring-gold ring-offset-2 ring-offset-white',
         className,
       )}
     >
-      <div className="flex items-start justify-between gap-4">
-        <StarRating rating={review.rating} label={ratingLabel} />
-        <Quote aria-hidden="true" className="size-9 fill-gold/15 text-gold/70 rtl:-scale-x-100" />
-      </div>
-
-      <blockquote className="mt-5 flex-1 leading-loose text-ink-700">
-        <p>{review.text}</p>
-      </blockquote>
-
-      <figcaption className="mt-6 flex items-center gap-3 border-t border-silver/60 pt-5">
-        <span
-          aria-hidden="true"
-          className="grid size-12 shrink-0 place-items-center rounded-full bg-ink text-lg font-extrabold text-gold"
-        >
-          {review.name.trim().charAt(0)}
-        </span>
-        <span className="min-w-0 flex-1">
-          <span className="block truncate font-bold text-ink">{review.name}</span>
-          <span className="mt-0.5 block truncate text-sm text-gold-ink">{review.procedure}</span>
-        </span>
-        <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-silver/35 px-2.5 py-1 text-xs font-bold text-ink-700">
-          <BadgeCheck aria-hidden="true" className="size-4 text-gold-600" />
-          {verifiedLabel}
-        </span>
-      </figcaption>
-    </figure>
+      {name.trim().charAt(0)}
+    </span>
   );
 }

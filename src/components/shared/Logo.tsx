@@ -42,11 +42,11 @@ interface LogoProps {
 /** Navbar lockup: logo mark + live text (crisp at any size, translatable). */
 export function Logo({ name, tagline, className, taglineClassName }: LogoProps) {
   return (
-    <span className={cn('flex items-center gap-3', className)}>
+    <span className={cn('flex min-w-0 items-center gap-3', className)}>
       <LogoMark className="h-11 w-auto shrink-0 sm:h-12" />
-      <span className="flex flex-col leading-tight">
-        <span className="text-base font-extrabold sm:text-lg">{name}</span>
-        <span className={cn('text-[0.7rem] font-normal sm:text-xs', taglineClassName)}>{tagline}</span>
+      <span className="flex min-w-0 flex-col leading-tight">
+        <span className="truncate text-base font-extrabold sm:text-lg">{name}</span>
+        <span className={cn('truncate text-[0.7rem] font-normal sm:text-xs', taglineClassName)}>{tagline}</span>
       </span>
     </span>
   );

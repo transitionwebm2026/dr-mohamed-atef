@@ -23,7 +23,6 @@ export default function GlobalNotFound() {
     <html lang="ar" dir="rtl" className={almarai.variable}>
       <body>
         <main className="relative isolate grid min-h-svh place-items-center overflow-hidden bg-ink px-4 py-16 text-center text-white">
-          <div aria-hidden="true" className="bg-dots absolute inset-0 -z-10" />
           <div aria-hidden="true" className="absolute -top-40 left-1/2 -z-10 size-[34rem] -translate-x-1/2 rounded-full bg-gold/20 blur-3xl" />
           <div className="max-w-xl">
             <LogoMark className="mx-auto h-24 w-auto" />

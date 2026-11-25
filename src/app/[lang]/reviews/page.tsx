@@ -11,9 +11,10 @@ import { localizedPath, routes } from '@/lib/routes';
 import { UnifiedHero } from '@/components/shared/UnifiedHero';
 import { JsonLd } from '@/components/shared/JsonLd';
 import { Reveal } from '@/components/shared/Reveal';
-import { ReviewCard } from '@/components/shared/ReviewCard';
 import { SectionHeading } from '@/components/shared/SectionHeading';
 import { PageCtaBanner } from '@/components/sections/shared/PageCtaBanner';
+import { GlassReviewWall } from '@/components/sections/reviews/GlassReviewWall';
+import { GlassStage } from '@/components/shared/glass/GlassStage';
 
 export async function generateMetadata({ params }: LangParams): Promise<Metadata> {
   const lang = await resolveLocale(params);
@@ -54,22 +55,23 @@ export default async function ReviewsPage({ params }: LangParams) {
         ]}
       />
 
-      <section className="section-y bg-paper">
+      {/* Glass wall: reviews float as 3D liquid-glass slabs over drifting gold/silver light */}
+      <section className="relative isolate overflow-clip bg-ink py-24 text-white lg:py-32">
+        <GlassStage tone="dark" layout="a" />
+
         <div className="container-x">
           <Reveal>
-            <SectionHeading title={copy.title} description={copy.description} />
+            <SectionHeading align="split" tone="dark" title={copy.title} description={copy.description} />
           </Reveal>
-          <ul className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {items.map((review, i) => (
-              <Reveal as="li" variant="zoom" key={review.id} delay={(i % 3) * 0.08}>
-                <ReviewCard
-                  review={review}
-                  verifiedLabel={dict.common.verifiedPatient}
-                  ratingLabel={t(dict.common.rating, { n: review.rating })}
-                />
-              </Reveal>
-            ))}
-          </ul>
+          <div className="mt-16 lg:mt-24">
+            <GlassReviewWall
+              reviews={items}
+              labels={{
+                verified: dict.common.verifiedPatient,
+                ratings: items.map((r) => t(dict.common.rating, { n: r.rating })),
+              }}
+            />
+          </div>
         </div>
       </section>
 

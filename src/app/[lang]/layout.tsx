@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
-import { Almarai } from 'next/font/google';
+import { Alexandria, Almarai } from 'next/font/google';
 import { notFound } from 'next/navigation';
 import { isLocale, localeMeta, locales } from '@/i18n/config';
 import { getDictionary } from '@/dictionaries';
@@ -11,7 +11,9 @@ import { Navbar, type NavbarLabels } from '@/components/shared/Navbar';
 import { Footer } from '@/components/shared/Footer';
 import { FloatingActions } from '@/components/shared/FloatingActions';
 import { JsonLd } from '@/components/shared/JsonLd';
-import { SpotlightTracker } from '@/components/shared/SpotlightTracker';
+import { PageTransition } from '@/components/shared/PageTransition';
+import { GlassDefs } from '@/components/shared/glass/GlassStage';
+import { localizedPath, navOrder, routes } from '@/lib/routes';
 import '../globals.css';
 
 const almarai = Almarai({
@@ -21,6 +23,14 @@ const almarai = Almarai({
   variable: '--font-almarai',
   // Don't preload all 8 weight/subset files at high priority — that would compete with the
   // LCP hero image. The render-blocking CSS discovers them early and only used faces download.
+  preload: false,
+});
+
+// Display face for headings (variable weight — one file per subset)
+const alexandria = Alexandria({
+  subsets: ['arabic', 'latin'],
+  display: 'swap',
+  variable: '--font-alexandria',
   preload: false,
 });
 
@@ -89,10 +99,20 @@ export default async function LocaleLayout({
     switchLanguage: dict.nav.switchLanguage,
     logoName: dict.meta.siteName,
     logoTagline: dict.nav.logoTagline,
+    menu: dict.nav.menu,
+    close: dict.common.close,
+    callUs: dict.common.callUs,
+    whatsapp: dict.common.whatsapp,
+    whatsappGreeting: dict.floating.whatsappGreeting,
+    social: dict.common.social,
   };
+  // Names shown on the page-transition curtain
+  const destinations = navOrder.map((key) => ({ path: localizedPath(lang, routes[key]), label: dict.nav[key] }));
 
   return (
-    <html lang={lang} dir={localeMeta[lang].dir} className={almarai.variable}>
+    // data-scroll-behavior="smooth": Next disables CSS smooth scrolling during route changes, so a new
+    // page opens instantly at the top (in-page anchors like /services/#faq still scroll smoothly).
+    <html lang={lang} dir={localeMeta[lang].dir} className={`${almarai.variable} ${alexandria.variable}`} data-scroll-behavior="smooth">
       <body>
         <a
           href="#main"
@@ -102,15 +122,20 @@ export default async function LocaleLayout({
         </a>
         <MotionProvider>
           <Navbar lang={lang} labels={navLabels} />
-          <main id="main">{children}</main>
+          {/* overflow-x-clip: 3D entrances (rotateX/Y in perspective) project past the edges before
+              they settle — clip them here so the page never scrolls sideways. `clip` keeps sticky working. */}
+          <main id="main" className="overflow-x-clip">
+            {children}
+          </main>
           <Footer lang={lang} dict={dict} />
+          <PageTransition lang={lang} destinations={destinations} />
+          <GlassDefs />
         </MotionProvider>
         <FloatingActions
           whatsappLabel={dict.floating.whatsapp}
           callLabel={dict.floating.call}
           greeting={dict.floating.whatsappGreeting}
         />
-        <SpotlightTracker />
         <JsonLd data={siteSchema(lang)} />
       </body>
     </html>

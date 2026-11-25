@@ -1,8 +1,9 @@
 import Link from 'next/link';
-import { ArrowRight, MessageCircle } from 'lucide-react';
+import { MessageCircle } from 'lucide-react';
 import type { Locale } from '@/i18n/config';
 import type { Faq } from '@/data/types';
 import { Accordion } from '@/components/shared/Accordion';
+import { ButtonLink, KnobArrow } from '@/components/shared/ButtonLink';
 import { Reveal } from '@/components/shared/Reveal';
 import { SectionHeading } from '@/components/shared/SectionHeading';
 import { whatsappUrl } from '@/lib/utils';
@@ -26,23 +27,17 @@ export function FaqSection({ lang, faqs, title, description, id, more, ask, clas
       <div className="container-x grid gap-12 lg:grid-cols-12 lg:gap-16">
         <Reveal className="lg:sticky lg:top-32 lg:col-span-5 lg:self-start">
           <SectionHeading align="start" title={title} description={description} />
-          <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
-            <a
-              href={whatsappUrl(ask.message)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 font-bold text-ink underline decoration-gold decoration-2 underline-offset-8 transition-colors hover:text-gold-ink"
-            >
-              <MessageCircle aria-hidden="true" className="size-5 text-gold-600" />
+          <div className="mt-9 flex flex-wrap items-center gap-x-6 gap-y-4">
+            <ButtonLink href={whatsappUrl(ask.message)} external variant="dark" icon={<MessageCircle />}>
               {ask.label}
-            </a>
+            </ButtonLink>
             {more ? (
               <Link
                 href={more.href}
-                className="inline-flex items-center gap-2 font-bold text-ink-500 transition-colors hover:text-ink"
+                className="group/btn link-sweep inline-flex items-center gap-2 pb-1 text-sm font-bold text-ink"
               >
                 {more.label}
-                <ArrowRight aria-hidden="true" className="size-4 rtl:-scale-x-100" />
+                <KnobArrow />
               </Link>
             ) : null}
           </div>

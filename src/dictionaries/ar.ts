@@ -53,6 +53,7 @@ export const ar = {
 
   common: {
     skipToContent: 'تخطَّ إلى المحتوى الرئيسي',
+    close: 'إغلاق',
     bookNow: 'احجز الآن',
     bookConsultation: 'احجز استشارة',
     ourServices: 'خدماتنا',
@@ -105,6 +106,7 @@ export const ar = {
     closeMenu: 'إغلاق القائمة',
     switchLanguage: 'Switch to English',
     logoTagline: 'استشاري جراحة القولون والمستقيم والشرج',
+    menu: 'القائمة',
   },
 
   floating: {
@@ -167,6 +169,7 @@ export const ar = {
         'أستاذ مساعد جراحة الأورام بالمعهد القومي للأورام',
       ],
       cta: 'تعرّف على الدكتور أكثر',
+      watch: 'شاهد الفيديو التعريفي',
     },
     stats: {
       title: 'أرقام تعكس الثقة',
@@ -261,6 +264,7 @@ export const ar = {
     timeline: {
       title: 'محطات صنعت الخبرة',
       description: 'رحلة أكاديمية ومهنية في جراحة الأورام بين جامعة القاهرة والمعهد القومي للأورام.',
+      hint: 'تابع التمرير لاستكشاف المسيرة',
     },
     promo: {
       title: 'رحلة المريض معنا.. من التشخيص إلى التعافي',
@@ -273,6 +277,9 @@ export const ar = {
     certifications: {
       title: 'اعتمادات علمية ومهنية',
       description: 'مؤهلات أكاديمية وعضويات في أبرز الجمعيات الجراحية المحلية والدولية.',
+      previous: 'الشهادة السابقة',
+      next: 'الشهادة التالية',
+      region: 'الشهادات والعضويات',
     },
     achievements: {
       title: 'خبرة تتحدث عنها النتائج',

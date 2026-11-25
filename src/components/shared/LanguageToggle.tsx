@@ -22,7 +22,7 @@ const options: { locale: Locale; text: string }[] = [
 ];
 
 /**
- * Two-sided language toggle with a sliding gold thumb. The thumb moves immediately on
+ * Two-sided language toggle with a sliding thumb. The thumb moves immediately on
  * click (optimistic) while the same page loads in the other language.
  */
 export function LanguageToggle({ lang, href, label, solid }: LanguageToggleProps) {
@@ -38,23 +38,30 @@ export function LanguageToggle({ lang, href, label, solid }: LanguageToggleProps
       role="group"
       aria-label="Language / اللغة"
       className={cn(
-        'relative grid h-10 grid-cols-2 items-center rounded-full border p-1 text-sm font-bold transition-colors duration-300',
-        solid ? 'border-silver bg-white/70' : 'border-white/30 bg-white/10 backdrop-blur-md',
+        'relative grid h-11 grid-cols-2 items-center rounded-full p-1 text-sm font-bold transition-colors duration-300',
+        solid ? 'bg-paper' : 'bg-white/10',
       )}
     >
       {/* Sliding thumb */}
       <span
         aria-hidden="true"
         className={cn(
-          'absolute inset-y-1 left-1 w-[calc(50%-0.25rem)] rounded-full bg-gold shadow-gold transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]',
+          'absolute inset-y-1 left-1 w-[calc(50%-0.25rem)] rounded-full transition-[translate,background-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]',
+          solid ? 'bg-ink' : 'bg-white',
           shown === 'ar' ? 'translate-x-full' : 'translate-x-0',
         )}
       />
       {options.map((option) => {
         const active = option.locale === lang;
         const itemClass = cn(
-          'relative z-10 grid h-8 w-12 place-items-center rounded-full transition-colors duration-300',
-          option.locale === shown ? 'text-ink' : solid ? 'text-ink-500 hover:text-ink' : 'text-white/80 hover:text-white',
+          'relative z-10 grid h-9 w-11 place-items-center rounded-full transition-colors duration-300',
+          option.locale === shown
+            ? solid
+              ? 'text-white'
+              : 'text-ink'
+            : solid
+              ? 'text-ink-500 hover:text-ink'
+              : 'text-white/80 hover:text-white',
         );
         return active ? (
           <span key={option.locale} lang={option.locale} aria-current="true" className={itemClass}>

@@ -1,9 +1,11 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState, type PointerEvent } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useEffect, useId, useRef, useState, type KeyboardEvent, type PointerEvent } from 'react';
+import { AnimatePresence, m } from 'framer-motion';
+import { BadgeCheck, ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { ReviewCard, type ReviewCardData } from '@/components/shared/ReviewCard';
+import { QuoteMark, ReviewerAvatar, StarRating, type ReviewCardData } from '@/components/shared/ReviewCard';
+import { GlassCard } from '@/components/shared/glass/GlassCard';
 
 export interface ReviewsSliderLabels {
   previous: string;
@@ -23,61 +25,32 @@ interface ReviewsSliderProps {
 }
 
 /**
- * Testimonial carousel: autoplay (pauses on hover / keyboard focus),
- * arrows, dots, swipe, and responsive 1 / 2 / 3 cards per view.
+ * One testimonial at a time, set large in a speech bubble. The patients are listed beside
+ * it as tabs; a thin gold line under the active name shows the autoplay timing
+ * (pauses on hover / focus, off with reduced motion). Swipe the bubble on touch.
  */
-export function ReviewsSlider({ reviews, labels, dir, interval = 5000 }: ReviewsSliderProps) {
-  const [perView, setPerView] = useState(1);
+export function ReviewsSlider({ reviews, labels, dir, interval = 6500 }: ReviewsSliderProps) {
+  const uid = useId();
   const [index, setIndex] = useState(0);
   const [hovered, setHovered] = useState(false);
   const [focused, setFocused] = useState(false);
-  const [reducedMotion, setReducedMotion] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(true);
   const pointerStart = useRef<number | null>(null);
+  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
-  const maxIndex = Math.max(0, reviews.length - perView);
+  const count = reviews.length;
+  const active = reviews[index] ?? reviews[0];
+  const paused = hovered || focused;
 
   useEffect(() => {
-    const lg = window.matchMedia('(min-width: 1024px)');
-    const md = window.matchMedia('(min-width: 768px)');
     const rm = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const update = () => {
-      setPerView(lg.matches ? 3 : md.matches ? 2 : 1);
-      setReducedMotion(rm.matches);
-    };
+    const update = () => setReducedMotion(rm.matches);
     update();
-    lg.addEventListener('change', update);
-    md.addEventListener('change', update);
     rm.addEventListener('change', update);
-    return () => {
-      lg.removeEventListener('change', update);
-      md.removeEventListener('change', update);
-      rm.removeEventListener('change', update);
-    };
+    return () => rm.removeEventListener('change', update);
   }, []);
 
-  useEffect(() => {
-    setIndex((i) => Math.min(i, maxIndex));
-  }, [maxIndex]);
-
-  const go = useCallback(
-    (next: number) => {
-      if (next > maxIndex) setIndex(0);
-      else if (next < 0) setIndex(maxIndex);
-      else setIndex(next);
-    },
-    [maxIndex],
-  );
-
-  const paused = hovered || focused || reducedMotion;
-
-  useEffect(() => {
-    if (paused || maxIndex === 0) return;
-    const timer = window.setInterval(() => setIndex((i) => (i >= maxIndex ? 0 : i + 1)), interval);
-    return () => window.clearInterval(timer);
-  }, [paused, maxIndex, interval]);
-
-  const sign = dir === 'rtl' ? 1 : -1;
-  const offset = (index * 100) / perView;
+  const go = (next: number) => setIndex(((next % count) + count) % count);
 
   const onPointerDown = (e: PointerEvent) => {
     pointerStart.current = e.clientX;
@@ -91,8 +64,26 @@ export function ReviewsSlider({ reviews, labels, dir, interval = 5000 }: Reviews
     go(forward ? index + 1 : index - 1);
   };
 
-  const arrowClass =
-    'grid size-12 place-items-center rounded-full border border-silver bg-white text-ink transition duration-300 hover:border-gold hover:bg-gold disabled:opacity-40';
+  const onTabsKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    const next = dir === 'rtl' ? 'ArrowLeft' : 'ArrowRight';
+    const prev = dir === 'rtl' ? 'ArrowRight' : 'ArrowLeft';
+    let target = index;
+    if (event.key === next || event.key === 'ArrowDown') target = (index + 1) % count;
+    else if (event.key === prev || event.key === 'ArrowUp') target = (index - 1 + count) % count;
+    else if (event.key === 'Home') target = 0;
+    else if (event.key === 'End') target = count - 1;
+    else return;
+    event.preventDefault();
+    go(target);
+    tabRefs.current[target]?.focus();
+  };
+
+  if (!active) return null;
+
+  const tabId = (i: number) => `${uid}-tab-${i}`;
+  const panelId = `${uid}-panel`;
+  const ringBtn =
+    'grid size-11 place-items-center rounded-full text-ink ring-1 ring-inset ring-silver transition duration-300 hover:bg-ink hover:text-white hover:ring-ink';
 
   return (
     <div
@@ -105,67 +96,119 @@ export function ReviewsSlider({ reviews, labels, dir, interval = 5000 }: Reviews
       onBlurCapture={(e) => {
         if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setFocused(false);
       }}
+      className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-14"
     >
-      <div className="-mx-3 overflow-hidden px-0 py-4">
-        <ul
-          aria-live={paused ? 'polite' : 'off'}
-          className="flex touch-pan-y transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] select-none"
-          style={{ transform: `translateX(${sign * offset}%)` }}
+      {/* Patients — tabs */}
+      <div
+        role="tablist"
+        aria-label={labels.goTo}
+        onKeyDown={onTabsKeyDown}
+        className="no-scrollbar -mx-4 flex gap-3 overflow-x-auto px-4 pt-1 pb-2 lg:order-first lg:col-span-5 lg:mx-0 lg:grid lg:gap-1 lg:overflow-visible lg:p-0"
+      >
+        {reviews.map((review, i) => {
+          const selected = i === index;
+          return (
+            <button
+              key={review.id}
+              ref={(el) => {
+                tabRefs.current[i] = el;
+              }}
+              id={tabId(i)}
+              type="button"
+              role="tab"
+              aria-selected={selected}
+              aria-controls={panelId}
+              tabIndex={selected ? 0 : -1}
+              onClick={() => go(i)}
+              className={cn(
+                'group relative flex shrink-0 items-center gap-3 overflow-hidden rounded-full p-1.5 text-start transition-colors duration-300 lg:rounded-[1.4rem] lg:p-3',
+                selected ? 'liquid-glass liquid-glass-light' : 'hover:bg-white/50',
+              )}
+            >
+              <ReviewerAvatar
+                name={review.name}
+                className={cn('relative transition-opacity duration-300', !selected && 'opacity-60 ring-transparent group-hover:opacity-100')}
+              />
+              <span className={cn('relative min-w-0 pe-3 lg:block', selected ? 'block' : 'hidden')}>
+                <span className="block truncate text-sm font-bold text-ink">{review.name}</span>
+                <span className="mt-0.5 hidden truncate text-xs text-ink-500 lg:block">{review.procedure}</span>
+              </span>
+              {selected && !reducedMotion ? (
+                <span
+                  aria-hidden="true"
+                  key={`progress-${index}`}
+                  onAnimationEnd={() => go(index + 1)}
+                  className="absolute inset-x-4 bottom-0 h-0.5 rounded-full bg-gold ltr:origin-left rtl:origin-right"
+                  style={{
+                    animation: `progress-fill ${interval}ms linear forwards`,
+                    animationPlayState: paused ? 'paused' : 'running',
+                  }}
+                />
+              ) : null}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Active quote */}
+      <div
+        id={panelId}
+        role="tabpanel"
+        aria-labelledby={tabId(index)}
+        aria-live={paused ? 'polite' : 'off'}
+        className="min-w-0 lg:col-span-7"
+      >
+        <div
+          className="relative touch-pan-y select-none"
           onPointerDown={onPointerDown}
           onPointerUp={onPointerUp}
           onPointerCancel={() => (pointerStart.current = null)}
         >
-          {reviews.map((review, i) => {
-            const visible = i >= index && i < index + perView;
-            return (
-              <li
-                key={review.id}
-                role="group"
-                aria-roledescription={labels.slide}
-                aria-label={`${i + 1} / ${reviews.length}`}
-                aria-hidden={!visible}
-                className="w-full shrink-0 grow-0 basis-full px-3 md:basis-1/2 lg:basis-1/3"
-              >
-                <ReviewCard
-                  review={review}
-                  verifiedLabel={labels.verified}
-                  ratingLabel={labels.ratings[i] ?? ''}
-                  className="hover:shadow-card"
-                />
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-
-      <div className="mt-8 flex items-center justify-between gap-6">
-        <div className="flex items-center gap-2" role="group" aria-label={labels.goTo}>
-          {Array.from({ length: maxIndex + 1 }, (_, i) => (
-            <button
-              key={i}
-              type="button"
-              onClick={() => go(i)}
-              aria-label={`${labels.goTo} ${i + 1}`}
-              aria-current={i === index ? 'true' : undefined}
-              className="grid h-6 place-items-center"
-            >
-              <span
-                className={cn(
-                  'block h-2 rounded-full transition-all duration-500',
-                  i === index ? 'w-8 bg-gold' : 'w-2 bg-silver hover:bg-ink-500',
-                )}
-              />
-            </button>
-          ))}
-        </div>
-
-        <div className="flex items-center gap-2">
-          <button type="button" onClick={() => go(index - 1)} aria-label={labels.previous} className={arrowClass}>
-            <ChevronLeft aria-hidden="true" className="size-5 rtl:rotate-180" />
-          </button>
-          <button type="button" onClick={() => go(index + 1)} aria-label={labels.next} className={arrowClass}>
-            <ChevronRight aria-hidden="true" className="size-5 rtl:rotate-180" />
-          </button>
+          <figure>
+              {/* The quote as a light glass speech bubble (its tail corner points at the patient).
+                  The glass stays put and only the words crossfade — fading the glass itself
+                  would drop its blur for the length of the fade. */}
+              <GlassCard tone="light" radius="bubble" enter={false} maxTilt={6} contentClassName="px-7 pt-12 pb-8 sm:px-10 sm:pb-10">
+                <QuoteMark className="absolute -top-5 h-10 w-14 fill-gold drop-shadow-[0_10px_18px_rgb(255_183_1/0.45)] [transform:translateZ(60px)] ltr:left-7 rtl:right-7 rtl:-scale-x-100" />
+                <AnimatePresence mode="wait" initial={false}>
+                  <m.blockquote
+                    key={active.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -6 }}
+                    transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                    style={{ transformStyle: 'preserve-3d' }}
+                  >
+                    <div className="[transform:translateZ(36px)]">
+                      <StarRating rating={active.rating} label={labels.ratings[index] ?? ''} />
+                    </div>
+                    <p className="mt-5 text-lg leading-[2] text-ink [transform:translateZ(22px)] sm:text-xl sm:leading-[2]">{active.text}</p>
+                  </m.blockquote>
+                </AnimatePresence>
+              </GlassCard>
+              <figcaption className="mt-5 flex items-center gap-3 ps-1">
+                {/* lg+: the active patient is already highlighted in the list beside the bubble */}
+                <ReviewerAvatar name={active.name} className="lg:hidden" />
+                <span className="min-w-0 flex-1 lg:sr-only">
+                  <span className="flex items-center gap-1.5 font-bold text-ink">
+                    <span className="truncate">{active.name}</span>
+                    <span title={labels.verified} className="inline-flex shrink-0">
+                      <BadgeCheck aria-hidden="true" className="size-4 text-gold-600" />
+                      <span className="sr-only">{labels.verified}</span>
+                    </span>
+                  </span>
+                  <span className="mt-0.5 block truncate text-sm text-ink-500">{active.procedure}</span>
+                </span>
+                <span className="flex shrink-0 items-center gap-2 lg:ms-auto">
+                  <button type="button" onClick={() => go(index - 1)} aria-label={labels.previous} className={ringBtn}>
+                    <ChevronLeft aria-hidden="true" className="size-5 rtl:rotate-180" />
+                  </button>
+                  <button type="button" onClick={() => go(index + 1)} aria-label={labels.next} className={ringBtn}>
+                    <ChevronRight aria-hidden="true" className="size-5 rtl:rotate-180" />
+                  </button>
+                </span>
+              </figcaption>
+          </figure>
         </div>
       </div>
     </div>

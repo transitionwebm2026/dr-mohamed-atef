@@ -130,14 +130,19 @@ export function UnifiedHero({
 
           <h1
             className={cn(
-              'animate-hero-in font-extrabold text-balance [animation-delay:80ms]',
+              'animate-hero-in font-bold text-balance [animation-delay:80ms] ltr:tracking-tight',
               compact
-                ? 'text-3xl leading-[1.35] sm:text-4xl xl:text-[2.6rem]'
-                : 'text-4xl leading-[1.2] sm:text-5xl xl:text-[3.1rem]',
+                ? 'text-[1.9rem] leading-[1.4] sm:text-4xl xl:text-[2.5rem]'
+                : 'text-[2.5rem] leading-[1.25] sm:text-5xl xl:text-[3.4rem]',
             )}
           >
             <span className="block">{title}</span>
-            {accent ? <span className="mt-3 block text-[0.55em] leading-snug text-gold">{accent}</span> : null}
+            {accent ? (
+              <span className="mt-4 flex items-center gap-3 text-[0.42em] leading-snug font-semibold text-gold">
+                <span aria-hidden="true" className="h-[1.5px] w-8 shrink-0 rounded-full bg-gold" />
+                {accent}
+              </span>
+            ) : null}
           </h1>
 
           <p className="mt-6 max-w-lg animate-hero-in text-base leading-loose text-white/80 [animation-delay:160ms] sm:text-lg">
@@ -155,8 +160,8 @@ export function UnifiedHero({
                   external={cta.external}
                   size="lg"
                   variant={cta.variant ?? (i === 0 ? 'primary' : 'ghost-light')}
+                  icon={cta.icon}
                 >
-                  {cta.icon}
                   {cta.label}
                 </ButtonLink>
               ))}
@@ -174,12 +179,12 @@ export function UnifiedHero({
             <a
               href={telUrl()}
               aria-label={`${anchor.callLabel}: ${siteConfig.phone.display}`}
-              className="inline-flex items-center gap-2 rounded-full text-sm font-bold text-white transition-colors hover:text-gold"
+              className="group inline-flex h-10 shrink-0 items-center gap-2.5 rounded-full bg-white/10 ps-1 pe-4 text-sm font-bold text-white ring-1 ring-white/20 backdrop-blur-md transition-colors ring-inset hover:bg-white/20"
             >
-              <span className="grid size-10 place-items-center rounded-full bg-gold text-ink">
+              <span className="grid size-8 place-items-center rounded-full bg-gold text-ink transition-transform duration-500 group-hover:rotate-12">
                 <Phone aria-hidden="true" className="size-4" />
               </span>
-              <span dir="ltr">{siteConfig.phone.display}</span>
+              <span dir="ltr" className="whitespace-nowrap">{siteConfig.phone.display}</span>
             </a>
           </div>
         </div>

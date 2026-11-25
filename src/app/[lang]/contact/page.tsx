@@ -17,6 +17,8 @@ import { Reveal } from '@/components/shared/Reveal';
 import { SectionHeading } from '@/components/shared/SectionHeading';
 import { WhatsAppIcon } from '@/components/shared/BrandIcons';
 import { BookingForm } from '@/components/sections/contact/BookingForm';
+import { GlassCard } from '@/components/shared/glass/GlassCard';
+import { GlassStage } from '@/components/shared/glass/GlassStage';
 import { ClinicLocations, type ClinicView } from '@/components/sections/contact/ClinicLocations';
 import { PageCtaBanner } from '@/components/sections/shared/PageCtaBanner';
 
@@ -86,13 +88,16 @@ export default async function ContactPage({ params }: LangParams) {
       />
 
       <section id="booking" className="section-y bg-paper">
-        <div className="container-x grid gap-10 lg:grid-cols-12 lg:gap-12">
-          {/* Booking form — first in DOM = right side in RTL */}
-          <Reveal className="lg:col-span-7">
-            <div className="relative overflow-hidden rounded-[2rem] border border-silver bg-white p-6 shadow-card sm:p-10">
-              <span aria-hidden="true" className="absolute inset-x-0 top-0 h-1 bg-linear-to-r from-gold via-gold-300 to-gold" />
-              <SectionHeading align="start" title={form.title} description={form.description} className="max-w-none" />
-              <div className="mt-10">
+        <GlassStage tone="light" layout="a" />
+        <div className="container-x grid grid-cols-1 gap-16 lg:grid-cols-12 lg:gap-12">
+          {/* Booking form on a slab of liquid glass (3D tilt; holds still while a field is focused).
+              First in DOM = right side in RTL. */}
+          <div className="min-w-0 lg:col-span-7">
+            <GlassCard tone="light" maxTilt={4} freezeOnFocus contentClassName="p-5 sm:p-9 lg:p-10">
+              <div className="[transform:translateZ(36px)]">
+                <SectionHeading align="start" title={form.title} description={form.description} className="max-w-none" />
+              </div>
+              <div className="mt-9 [transform-style:preserve-3d]">
                 <BookingForm
                   labels={form}
                   intlLocale={localeMeta[lang].intl}
@@ -102,10 +107,10 @@ export default async function ContactPage({ params }: LangParams) {
                   branches={clinics.map((c) => ({ value: c.id, label: c.name[lang] }))}
                 />
               </div>
-            </div>
-          </Reveal>
+            </GlassCard>
+          </div>
 
-          <Reveal className="lg:col-span-5" delay={0.1}>
+          <Reveal className="min-w-0 lg:col-span-5 lg:ps-4" delay={0.1}>
             <SectionHeading align="start" title={info.title} description={info.description} className="mb-8" />
             <ClinicLocations
               clinics={clinicViews}

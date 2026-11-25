@@ -35,17 +35,15 @@ export function ArticlesExplorer({ articles, categories, labels }: ArticlesExplo
               aria-pressed={selected}
               onClick={() => setActive(pill.key)}
               className={cn(
-                'inline-flex h-11 shrink-0 items-center gap-2 rounded-full border px-5 text-sm font-bold transition duration-300',
-                selected
-                  ? 'border-gold bg-gold text-ink shadow-gold'
-                  : 'border-silver bg-white text-ink-700 hover:border-gold hover:bg-gold/10',
+                'inline-flex h-11 shrink-0 items-center gap-2.5 rounded-full ps-5 pe-2 text-sm font-bold ring-1 transition duration-300 ring-inset',
+                selected ? 'bg-ink text-white ring-ink' : 'bg-white text-ink-700 ring-silver hover:ring-ink',
               )}
             >
               {pill.label}
               <span
                 className={cn(
-                  'grid min-w-6 place-items-center rounded-full px-1.5 text-xs',
-                  selected ? 'bg-ink text-gold' : 'bg-silver/40 text-ink-700',
+                  'grid size-7 place-items-center rounded-full text-xs',
+                  selected ? 'bg-gold text-ink' : 'bg-paper text-ink-700',
                 )}
               >
                 {count}
@@ -62,7 +60,7 @@ export function ArticlesExplorer({ articles, categories, labels }: ArticlesExplo
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -8 }}
           transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-10 grid gap-7 md:grid-cols-2 lg:grid-cols-3"
+          className="mt-12 grid gap-x-8 gap-y-14 md:grid-cols-2 lg:grid-cols-3"
           aria-live="polite"
         >
           {visible.length > 0 ? (

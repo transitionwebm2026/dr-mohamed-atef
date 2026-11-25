@@ -1,53 +1,63 @@
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
 import type { Locale } from '@/i18n/config';
 import type { Dictionary } from '@/dictionaries';
 import { specialties } from '@/data/services';
 import { localizedPath, routes } from '@/lib/routes';
-import { ButtonLink } from '@/components/shared/ButtonLink';
+import { ButtonLink, KnobArrow } from '@/components/shared/ButtonLink';
 import { DataIcon } from '@/components/shared/DataIcon';
+import { GlassCard } from '@/components/shared/glass/GlassCard';
+import { GlassStage } from '@/components/shared/glass/GlassStage';
 import { Reveal } from '@/components/shared/Reveal';
+import { RingIcon } from '@/components/shared/RingIcon';
 import { SectionHeading } from '@/components/shared/SectionHeading';
 
+/** Specialties as 3D liquid-glass slabs, three per row; each slab links to its section on Services. */
 export function Expertise({ lang, dict }: { lang: Locale; dict: Dictionary }) {
   const copy = dict.about.expertise;
   const servicesHref = localizedPath(lang, routes.services);
 
   return (
-    <section className="section-y bg-white">
+    <section className="section-y bg-paper">
+      <GlassStage tone="light" layout="b" />
       <div className="container-x">
         <Reveal>
-          <SectionHeading title={copy.title} description={copy.description} />
+          <SectionHeading
+            align="split"
+            title={copy.title}
+            description={copy.description}
+            action={<ButtonLink href={servicesHref}>{copy.cta}</ButtonLink>}
+          />
         </Reveal>
 
-        <ul className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:mt-16 lg:grid-cols-3 lg:gap-7">
           {specialties.map((s, i) => (
-            <Reveal as="li" variant="zoom" key={s.id} delay={(i % 3) * 0.08}>
-              <article className="group relative flex h-full flex-col card-smart rounded-3xl border border-silver bg-white p-7 shadow-card transition duration-500 hover:-translate-y-1.5 hover:border-gold/60 hover:shadow-card-hover">
-                <span className="grid size-14 place-items-center rounded-2xl bg-silver/40 text-ink transition-all duration-500 group-hover:-rotate-6 group-hover:scale-110 group-hover:bg-gold">
-                  <DataIcon name={s.icon} className="size-7" />
-                </span>
-                <h3 className="mt-6 text-lg leading-relaxed font-extrabold text-ink">
-                  <Link href={`${servicesHref}#${s.id}`} className="after:absolute after:inset-0 after:content-['']">
-                    {s.title[lang]}
-                  </Link>
-                </h3>
-                <p className="mt-2 flex-1 text-sm leading-loose text-ink-500">{s.short[lang]}</p>
-                <ArrowRight
-                  aria-hidden="true"
-                  className="mt-6 size-5 text-gold-600 transition-transform duration-300 group-hover:translate-x-1 rtl:-scale-x-100 rtl:group-hover:-translate-x-1"
+            <li key={s.id} className="min-w-0">
+              <GlassCard tone="light" gold={i === 0} delay={(i % 3) * 0.1} contentClassName="group/btn flex h-full flex-col p-7 sm:p-8">
+                {/* Whole slab is the link (content layers are transformed, so the link is its own layer) */}
+                <Link
+                  href={`${servicesHref}#${s.id}`}
+                  aria-labelledby={`expertise-${s.id}`}
+                  className="absolute inset-0 z-20 rounded-[2rem] focus-visible:outline-offset-4"
                 />
-              </article>
-            </Reveal>
+                <div className="flex items-start justify-between gap-4 [transform:translateZ(55px)]">
+                  <RingIcon size="md" className="bg-white/80 shadow-[0_12px_24px_-12px_rgb(58_58_56/0.4)]">
+                    <DataIcon name={s.icon} className="ring-icon" />
+                  </RingIcon>
+                  <span
+                    aria-hidden="true"
+                    className="grid size-11 shrink-0 place-items-center rounded-full bg-white/70 text-ink ring-1 ring-white transition duration-500 group-hover:bg-gold"
+                  >
+                    <KnobArrow />
+                  </span>
+                </div>
+                <h3 id={`expertise-${s.id}`} className="mt-7 font-display text-xl leading-relaxed font-semibold text-ink [transform:translateZ(36px)]">
+                  {s.title[lang]}
+                </h3>
+                <p className="mt-2 text-sm leading-loose text-ink-700 [transform:translateZ(20px)]">{s.short[lang]}</p>
+              </GlassCard>
+            </li>
           ))}
         </ul>
-
-        <Reveal className="mt-14 flex justify-center">
-          <ButtonLink href={servicesHref} size="lg">
-            {copy.cta}
-            <ArrowRight aria-hidden="true" className="size-5 rtl:-scale-x-100" />
-          </ButtonLink>
-        </Reveal>
       </div>
     </section>
   );

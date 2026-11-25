@@ -14,13 +14,22 @@ import { WhatsAppIcon } from './BrandIcons';
 
 export function Footer({ lang, dict }: { lang: Locale; dict: Dictionary }) {
   const year = new Date().getFullYear();
-  const headingClass = 'mb-4 text-sm font-bold text-gold ltr:tracking-[0.14em] ltr:uppercase';
-  const linkClass = 'text-white/70 transition-colors hover:text-gold';
+  const headingClass = 'mb-5 flex items-center gap-2 font-display text-base font-semibold text-white';
+  const headingDot = <span aria-hidden="true" className="size-1.5 rounded-full bg-gold" />;
+  const linkClass = 'link-sweep pb-0.5 text-white/70 transition-colors hover:text-white';
 
   return (
     <footer className="relative overflow-hidden bg-ink text-white">
-      <div aria-hidden="true" className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-gold/60 to-transparent" />
-      <div aria-hidden="true" className="bg-dots absolute inset-0 opacity-60" />
+      {/* Oversized hairline ring (logo motif) */}
+      <svg
+        aria-hidden="true"
+        viewBox="0 0 600 600"
+        fill="none"
+        className="pointer-events-none absolute -top-72 size-[40rem] text-white/[0.06] ltr:-left-60 rtl:-right-60"
+      >
+        <circle cx="300" cy="300" r="296" stroke="currentColor" strokeWidth="1.5" vectorEffect="non-scaling-stroke" />
+        <circle cx="300" cy="300" r="230" stroke="currentColor" strokeWidth="1.5" vectorEffect="non-scaling-stroke" />
+      </svg>
 
       <div className="container-x relative grid gap-10 py-12 sm:grid-cols-2 lg:grid-cols-12 lg:gap-8 lg:py-14">
         <div className="lg:col-span-4">
@@ -32,7 +41,10 @@ export function Footer({ lang, dict }: { lang: Locale; dict: Dictionary }) {
         </div>
 
         <nav aria-label={dict.footer.quickLinks} className="lg:col-span-2">
-          <h2 className={headingClass}>{dict.footer.quickLinks}</h2>
+          <h2 className={headingClass}>
+            {headingDot}
+            {dict.footer.quickLinks}
+          </h2>
           <ul className="grid gap-2.5 text-sm">
             {navOrder.map((key) => (
               <li key={key}>
@@ -45,7 +57,10 @@ export function Footer({ lang, dict }: { lang: Locale; dict: Dictionary }) {
         </nav>
 
         <nav aria-label={dict.footer.specialties} className="lg:col-span-3">
-          <h2 className={headingClass}>{dict.footer.specialties}</h2>
+          <h2 className={headingClass}>
+            {headingDot}
+            {dict.footer.specialties}
+          </h2>
           <ul className="grid gap-2.5 text-sm">
             {specialties.map((s) => (
               <li key={s.id}>
@@ -58,12 +73,15 @@ export function Footer({ lang, dict }: { lang: Locale; dict: Dictionary }) {
         </nav>
 
         <div className="lg:col-span-3">
-          <h2 className={headingClass}>{dict.footer.contact}</h2>
+          <h2 className={headingClass}>
+            {headingDot}
+            {dict.footer.contact}
+          </h2>
           <ul className="grid gap-3 text-sm">
             <li>
               <a href={telUrl()} className="flex items-center gap-3 text-white/80 transition-colors hover:text-gold">
                 <Phone aria-hidden="true" className="size-4 shrink-0 text-gold" />
-                <span dir="ltr">{siteConfig.phone.display}</span>
+                <span dir="ltr" className="whitespace-nowrap">{siteConfig.phone.display}</span>
               </a>
             </li>
             <li>

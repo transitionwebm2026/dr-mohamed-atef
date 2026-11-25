@@ -69,7 +69,7 @@ export default async function ArticlesPage({ params }: LangParams) {
       <section className="section-y bg-white">
         <div className="container-x">
           <Reveal>
-            <SectionHeading title={copy.title} description={copy.description} />
+            <SectionHeading align="split" title={copy.title} description={copy.description} />
           </Reveal>
           <Reveal className="mt-10" delay={0.08}>
             <ArticlesExplorer
