@@ -4,6 +4,7 @@ import { useCallback, useId, useRef, useState, type KeyboardEvent, type ReactNod
 import { AnimatePresence, m } from 'framer-motion';
 import { BedDouble, MousePointerClick, Timer } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { FilterPills } from '@/components/shared/FilterPills';
 import { Reveal } from '@/components/shared/Reveal';
 import { GlassCard } from '@/components/shared/glass/GlassCard';
 
@@ -16,29 +17,46 @@ export interface ProcedureView {
   image: string;
 }
 
-interface ProcedureShowcaseProps {
+/** A sub-specialty of the department and its procedures. */
+export interface ProcedureGroupView {
+  id: string;
+  label: string;
   procedures: ProcedureView[];
-  /** Server-rendered specialty copy (title, description, highlights, CTA). */
+}
+
+interface ProcedureShowcaseProps {
+  groups: ProcedureGroupView[];
+  /** Server-rendered department copy (title, description, highlights, CTA). */
   intro: ReactNode;
-  /** Server-rendered specialty icon shown on the image corner. */
+  /** Server-rendered department icon shown on the image corner. */
   badge: ReactNode;
   reversed?: boolean;
   dir: 'rtl' | 'ltr';
-  labels: { title: string; hint: string };
+  labels: { title: string; hint: string; groups: string };
 }
 
 /**
- * Specialty showcase as a list–detail view: the procedures are a list of tabs (the
+ * Department showcase as a list–detail view: the procedures are a list of tabs (the
  * selected one opens to show its description and stay / recovery), and the large
- * image beside it crossfades to the selected procedure.
+ * image beside it crossfades to the selected procedure. Departments with several
+ * sub-specialties get a row of pills above the list that switches between them.
  */
-export function ProcedureShowcase({ procedures, intro, badge, reversed = false, dir, labels }: ProcedureShowcaseProps) {
+export function ProcedureShowcase({ groups, intro, badge, reversed = false, dir, labels }: ProcedureShowcaseProps) {
   const uid = useId();
+  const [groupId, setGroupId] = useState(groups[0]?.id ?? '');
   const [activeIndex, setActiveIndex] = useState(0);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const preloaded = useRef(new Set<string>());
 
+  const group = groups.find((g) => g.id === groupId) ?? groups[0];
+  const procedures = group?.procedures ?? [];
   const active = procedures[activeIndex] ?? procedures[0];
+
+  const selectGroup = (id: string) => {
+    if (id === groupId) return;
+    setGroupId(id);
+    setActiveIndex(0);
+  };
   const tabId = (i: number) => `${uid}-tab-${i}`;
   const panelId = `${uid}-panel`;
 
@@ -65,7 +83,7 @@ export function ProcedureShowcase({ procedures, intro, badge, reversed = false, 
     tabRefs.current[index]?.focus();
   };
 
-  if (!active) return null;
+  if (!group || !active) return null;
 
   const chip = 'inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 ring-1 ring-inset ring-ink/15';
 
@@ -138,7 +156,28 @@ export function ProcedureShowcase({ procedures, intro, badge, reversed = false, 
             </p>
           </div>
 
-          <div role="tablist" aria-label={labels.title} aria-orientation="vertical" onKeyDown={onKeyDown} className="mt-5 grid gap-3">
+          {groups.length > 1 ? (
+            <FilterPills
+              size="sm"
+              className="mt-5"
+              label={labels.groups}
+              active={group.id}
+              onSelect={selectGroup}
+              pills={groups.map((g) => ({ key: g.id, label: g.label, count: g.procedures.length }))}
+            />
+          ) : null}
+
+          <m.div
+            key={group.id}
+            role="tablist"
+            aria-label={groups.length > 1 ? `${labels.title} — ${group.label}` : labels.title}
+            aria-orientation="vertical"
+            onKeyDown={onKeyDown}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            className="mt-5 grid gap-3"
+          >
             {procedures.map((p, i) => {
               const selected = i === activeIndex;
               return (
@@ -208,7 +247,7 @@ export function ProcedureShowcase({ procedures, intro, badge, reversed = false, 
                 </button>
               );
             })}
-          </div>
+          </m.div>
         </Reveal>
       </div>
     </>

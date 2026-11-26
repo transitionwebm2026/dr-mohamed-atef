@@ -37,14 +37,14 @@ export const en: Dictionary = {
         description: 'Experiences of patients who trusted Dr. Mohamed Atef ElKordy through their cancer treatment journey.',
       },
       videos: {
-        title: 'Cancer Awareness Videos',
+        title: 'Patient Education Videos',
         description:
-          'Short videos in which Dr. Mohamed Atef ElKordy explains the essentials of breast, colorectal and stomach cancer and recovery after surgery.',
+          'Short videos in which Dr. Mohamed Atef ElKordy explains the essentials of colon, rectal & anal surgery, general & laparoscopic surgery and surgical oncology.',
       },
       articles: {
-        title: 'Cancer Articles & Patient Education',
+        title: 'Medical Articles & Patient Education',
         description:
-          'Trusted articles to help you understand diagnosis, tumour staging, preparing for cancer surgery and recovering safely.',
+          'Trusted articles on colon, rectal & anal surgery, general & laparoscopic surgery and surgical oncology: diagnosis, treatment options, preparing for surgery and recovery.',
       },
       contact: {
         title: 'Contact & Book an Appointment',
@@ -135,7 +135,7 @@ export const en: Dictionary = {
       title: 'Colon & rectal surgery',
       accent: 'anal and cancer surgery with precision',
       subtitle:
-        'Laser treatment for haemorrhoids, fissures and fistulas; colorectal, breast, stomach, liver and gynaecological cancers; and general surgery — within a plan tailored to you.',
+        'Three departments: colon, rectal & anal surgery, general & laparoscopic surgery and surgical oncology — from laser treatment of haemorrhoids and fistulas to colon, breast and stomach cancer, within a plan tailored to you.',
     },
     reviews: {
       title: 'Trust we treasure',
@@ -144,13 +144,13 @@ export const en: Dictionary = {
     },
     videos: {
       title: 'Trusted answers',
-      accent: 'about cancer in a minute',
-      subtitle: 'Short videos in which Dr. Mohamed Atef ElKordy answers the questions cancer patients ask most — in simple, clear language.',
+      accent: 'in under a minute',
+      subtitle: 'Short videos in which Dr. Mohamed Atef ElKordy answers the questions patients ask most across his three departments — in simple, clear language.',
     },
     articles: {
       title: 'Understand your condition',
       accent: 'and decide with confidence',
-      subtitle: 'Trusted articles to help you understand diagnosis, staging, treatment options and recovery.',
+      subtitle: 'Trusted articles to help you understand diagnosis, treatment options and recovery — organised by service department.',
     },
     contact: {
       title: 'Your first step',
@@ -179,8 +179,8 @@ export const en: Dictionary = {
       title: 'Numbers that reflect trust',
     },
     featured: {
-      title: 'Precise cancer surgery, lasting results',
-      description: 'Advanced procedures selected and planned carefully according to tumour type, stage and each patient’s condition.',
+      title: 'Precise surgery, lasting results',
+      description: 'A signature procedure from each department, chosen and planned carefully around every patient’s condition.',
       cta: 'Explore All Services',
       details: 'Procedure details',
     },
@@ -237,7 +237,7 @@ export const en: Dictionary = {
     },
     videos: {
       title: 'Medical insight in under a minute',
-      description: 'Short, clear answers to the questions cancer patients and their families ask most.',
+      description: 'Short, clear answers to the questions patients and their families ask most.',
     },
     articles: {
       title: 'Read to understand your condition clearly',
@@ -274,8 +274,8 @@ export const en: Dictionary = {
       title: 'The patient journey with us — from diagnosis to recovery',
     },
     expertise: {
-      title: 'Precision sub-specialties under one roof',
-      description: 'Expertise covering colon, rectal and anal surgery and the key fields of surgical oncology, alongside general and laparoscopic surgery.',
+      title: 'Three departments under one roof',
+      description: 'Colon, rectal & anal surgery, general & laparoscopic surgery and surgical oncology — academic and surgical expertise in each.',
       cta: 'Explore all services',
     },
     certifications: {
@@ -297,16 +297,18 @@ export const en: Dictionary = {
 
   services: {
     grid: {
-      title: 'Choose a specialty to explore',
-      description: 'Select any specialty to jump straight to a detailed explanation of procedures, hospital stay and recovery.',
+      title: 'Choose a department to explore',
+      description:
+        'Colon, rectal & anal surgery, general & laparoscopic surgery and surgical oncology — select any department to jump to its procedures, hospital stay and recovery.',
       jump: 'View details',
     },
     detail: {
       proceduresTitle: 'Available operations & procedures',
       proceduresHint: 'Select any procedure to preview it above',
+      groups: 'Sub-specialties',
       nowShowing: 'Now showing',
       bookProcedure: 'Book this procedure',
-      book: 'Book a consultation for this specialty',
+      book: 'Book a consultation in this department',
     },
     method: {
       title: 'How do we determine the right treatment?',
@@ -365,7 +367,10 @@ export const en: Dictionary = {
   videos: {
     grid: {
       title: 'Watch — and understand your condition simply',
-      description: 'Short, focused clips explaining the essentials of cancer and its treatment in an easy way.',
+      description: 'Short, focused clips explaining the essentials of your condition and its treatment in an easy way. Choose the department that concerns you.',
+      all: 'All',
+      filterLabel: 'Filter videos by department',
+      empty: 'There are no videos in this department yet.',
     },
     cta: {
       title: 'Have a question we haven’t answered yet?',
@@ -379,10 +384,10 @@ export const en: Dictionary = {
     },
     grid: {
       title: 'Medical knowledge library',
-      description: 'Choose a category and browse the related articles.',
+      description: 'Choose a department and browse the related articles.',
       all: 'All',
-      filterLabel: 'Filter articles by category',
-      empty: 'There are no articles in this category yet.',
+      filterLabel: 'Filter articles by department',
+      empty: 'There are no articles in this department yet.',
     },
     detail: {
       published: 'Published',
@@ -469,7 +474,7 @@ export const en: Dictionary = {
     tagline:
       'Complete surgical care for colon, rectal, anal and cancer conditions — combining academic expertise, surgical precision and genuine human attention for every patient.',
     quickLinks: 'Quick links',
-    specialties: 'Specialties',
+    specialties: 'Departments',
     contact: 'Contact information',
     rights: 'All rights reserved',
     disclaimer: 'Information on this website is for educational purposes and does not replace a direct medical consultation.',

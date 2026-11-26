@@ -46,25 +46,41 @@ export interface Procedure {
   recovery: Localized;
 }
 
+/**
+ * The three departments every service, article and video belongs to.
+ * Also the in-page anchors on /services/ (e.g. /services/#surgical-oncology).
+ */
+export type DepartmentId = 'colorectal-surgery' | 'general-surgery' | 'surgical-oncology';
+
+/** A sub-specialty inside a department (e.g. breast cancer inside surgical oncology). */
 export interface Specialty {
-  /** Used as the in-page anchor on /services/ (e.g. /services/#hernia-surgery). */
   id: string;
+  /** Short label for the sub-specialty switcher. */
+  title: Localized;
+  /** Shown in the showcase while the group's first procedure is selected. */
+  image: string;
+  procedures: Procedure[];
+}
+
+export interface Department {
+  id: DepartmentId;
   icon: IconKey;
   image: string;
   title: Localized;
   short: Localized;
   description: Localized;
   highlights: Localized<string[]>;
-  procedures: Procedure[];
+  /** Three short focus areas shown as chips on the department cards. */
+  tags: Localized<string[]>;
+  groups: Specialty[];
 }
 
 export interface FeaturedSurgery {
   id: string;
-  specialtyId: string;
+  departmentId: DepartmentId;
   image: string;
   title: Localized;
   description: Localized;
-  tag: Localized;
 }
 
 export interface Review {
@@ -83,9 +99,12 @@ export interface VideoItem {
   duration: string;
   title: Localized;
   topic: Localized;
+  /** Department used by the filter on /videos/ (the intro / promo films have none). */
+  category?: DepartmentId;
 }
 
-export type ArticleCategory = 'anorectal' | 'colorectal' | 'breast' | 'gastric' | 'recovery';
+/** Articles are filed under the same three departments as the services. */
+export type ArticleCategory = DepartmentId;
 
 export interface ArticleSection {
   heading: string;

@@ -7,7 +7,8 @@ import type { HeroImage } from '@/data/types';
 import { getDictionary } from '@/dictionaries';
 import { siteConfig } from '@/config/site';
 import { cn, telUrl } from '@/lib/utils';
-import { ButtonLink, type ButtonVariant } from './ButtonLink';
+import type { ButtonVariant } from './ButtonLink';
+import { HeroCta } from './HeroCta';
 import { SocialLinks } from './SocialLinks';
 
 export interface HeroCta {
@@ -152,18 +153,19 @@ export function UnifiedHero({
           {children ? <div className="mt-6 animate-hero-in [animation-delay:200ms]">{children}</div> : null}
 
           {ctas.length > 0 ? (
-            <div className="mt-9 flex animate-hero-in flex-wrap gap-3 [animation-delay:240ms] sm:gap-4">
+            // Lead action = gold disc that floods into a pill on hover; the others = ring + underline
+            <div className="mt-9 flex animate-hero-in flex-wrap items-center gap-x-8 gap-y-5 [animation-delay:240ms]">
               {ctas.map((cta, i) => (
-                <ButtonLink
+                <HeroCta
                   key={cta.href}
                   href={cta.href}
                   external={cta.external}
-                  size="lg"
-                  variant={cta.variant ?? (i === 0 ? 'primary' : 'ghost-light')}
                   icon={cta.icon}
+                  tone={i === 0 && cta.variant !== 'whatsapp' ? 'disc' : 'ring'}
+                  accent={cta.variant === 'whatsapp' ? 'whatsapp' : 'white'}
                 >
                   {cta.label}
-                </ButtonLink>
+                </HeroCta>
               ))}
             </div>
           ) : null}

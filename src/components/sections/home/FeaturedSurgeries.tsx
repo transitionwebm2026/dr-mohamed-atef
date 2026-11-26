@@ -1,6 +1,6 @@
 import type { Locale } from '@/i18n/config';
 import type { Dictionary } from '@/dictionaries';
-import { featuredSurgeries } from '@/data/services';
+import { departmentTitles, featuredSurgeries } from '@/data/services';
 import { localizedPath, routes } from '@/lib/routes';
 import { ButtonLink } from '@/components/shared/ButtonLink';
 import { Reveal } from '@/components/shared/Reveal';
@@ -27,11 +27,11 @@ export function FeaturedSurgeries({ lang, dict }: { lang: Locale; dict: Dictiona
           <FeaturedPanels
             items={featuredSurgeries.map((item) => ({
               id: item.id,
-              href: `${servicesHref}#${item.specialtyId}`,
+              href: `${servicesHref}#${item.departmentId}`,
               image: item.image,
               title: item.title[lang],
               description: item.description[lang],
-              tag: item.tag[lang],
+              tag: departmentTitles[item.departmentId][lang],
             }))}
           />
         </Reveal>

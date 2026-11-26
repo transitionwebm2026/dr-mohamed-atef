@@ -6,7 +6,7 @@ import { getDictionary, t } from '@/dictionaries';
 import { siteConfig } from '@/config/site';
 import { heroImages } from '@/data/media';
 import { clinics, directionsUrl, mapEmbedUrl } from '@/data/clinics';
-import { specialties } from '@/data/services';
+import { departmentProcedures, departments } from '@/data/services';
 import { buildPageMetadata } from '@/lib/seo';
 import { buildBreadcrumbs } from '@/lib/breadcrumbs';
 import { routes } from '@/lib/routes';
@@ -41,11 +41,12 @@ export default async function ContactPage({ params }: LangParams) {
   const info = dict.contact.info;
   const crumbs = buildBreadcrumbs(lang, dict, [{ label: dict.nav.contact, path: routes.contact }]);
 
-  const serviceGroups = specialties.map((s) => ({
-    label: s.title[lang],
+  // One option group per department: the department itself, then every procedure in it
+  const serviceGroups = departments.map((d) => ({
+    label: d.title[lang],
     options: [
-      { value: `spec:${s.id}`, label: s.title[lang] },
-      ...s.procedures.map((p) => ({ value: `proc:${p.id}`, label: p.title[lang] })),
+      { value: `spec:${d.id}`, label: d.title[lang] },
+      ...departmentProcedures(d).map((p) => ({ value: `proc:${p.id}`, label: p.title[lang] })),
     ],
   }));
 

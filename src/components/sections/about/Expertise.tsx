@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import type { Locale } from '@/i18n/config';
 import type { Dictionary } from '@/dictionaries';
-import { specialties } from '@/data/services';
+import { departments } from '@/data/services';
 import { localizedPath, routes } from '@/lib/routes';
 import { ButtonLink, KnobArrow } from '@/components/shared/ButtonLink';
 import { DataIcon } from '@/components/shared/DataIcon';
@@ -11,7 +11,7 @@ import { Reveal } from '@/components/shared/Reveal';
 import { RingIcon } from '@/components/shared/RingIcon';
 import { SectionHeading } from '@/components/shared/SectionHeading';
 
-/** Specialties as 3D liquid-glass slabs, three per row; each slab links to its section on Services. */
+/** The three departments as 3D liquid-glass slabs; each slab links to its section on Services. */
 export function Expertise({ lang, dict }: { lang: Locale; dict: Dictionary }) {
   const copy = dict.about.expertise;
   const servicesHref = localizedPath(lang, routes.services);
@@ -30,8 +30,8 @@ export function Expertise({ lang, dict }: { lang: Locale; dict: Dictionary }) {
         </Reveal>
 
         <ul className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:mt-16 lg:grid-cols-3 lg:gap-7">
-          {specialties.map((s, i) => (
-            <li key={s.id} className="min-w-0">
+          {departments.map((s, i) => (
+            <li key={s.id} className="min-w-0 sm:last:col-span-2 lg:last:col-span-1">
               <GlassCard tone="light" gold={i === 0} delay={(i % 3) * 0.1} contentClassName="group/btn flex h-full flex-col p-7 sm:p-8">
                 {/* Whole slab is the link (content layers are transformed, so the link is its own layer) */}
                 <Link
@@ -54,6 +54,13 @@ export function Expertise({ lang, dict }: { lang: Locale; dict: Dictionary }) {
                   {s.title[lang]}
                 </h3>
                 <p className="mt-2 text-sm leading-loose text-ink-700 [transform:translateZ(20px)]">{s.short[lang]}</p>
+                <ul className="mt-auto flex flex-wrap gap-2 pt-6 [transform:translateZ(28px)]">
+                  {s.tags[lang].map((tag) => (
+                    <li key={tag} className="rounded-full bg-white/70 px-3 py-1.5 text-xs font-bold text-ink-700 ring-1 ring-white">
+                      {tag}
+                    </li>
+                  ))}
+                </ul>
               </GlassCard>
             </li>
           ))}

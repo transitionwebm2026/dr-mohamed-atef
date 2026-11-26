@@ -1,67 +1,43 @@
-import type { Locale } from '@/i18n/config';
+import { localeMeta, type Locale } from '@/i18n/config';
 import type { Stat } from '@/data/types';
-import { CountUp } from '@/components/shared/CountUp';
 import { DataIcon } from '@/components/shared/DataIcon';
-import { DrawnRing } from '@/components/shared/DrawnRing';
 import { GlassCard } from '@/components/shared/glass/GlassCard';
 import { GlassStage } from '@/components/shared/glass/GlassStage';
 import { Odometer, PercentBar } from '@/components/shared/Odometer';
 import { Reveal } from '@/components/shared/Reveal';
 import { RingIcon } from '@/components/shared/RingIcon';
 import { SectionHeading, headingClass } from '@/components/shared/SectionHeading';
+import { PulseStats } from '@/components/sections/home/PulseStats';
 import { cn } from '@/lib/utils';
 
 interface StatsSectionProps {
   lang: Locale;
   stats: Stat[];
-  /** `band`: dark strip with the title beside the rings (Home). `cards`: bento of glass tiles with rolling counters (About). */
+  /** `band`: dark "vital signs" strip with a heartbeat trace under the figures (Home). `cards`: bento of glass tiles with rolling counters (About). */
   variant?: 'band' | 'cards';
   title: string;
   description?: string;
 }
 
-/** A figure set inside the logo's ring, which draws itself in on scroll. */
-function RingStat({ stat, lang, tone, delay }: { stat: Stat; lang: Locale; tone: 'dark' | 'light'; delay: number }) {
-  const dark = tone === 'dark';
-  return (
-    <div className="flex flex-col items-center text-center">
-      <span className="relative grid aspect-square w-full max-w-[12rem] place-items-center">
-        <DrawnRing tone={tone} delay={delay} />
-        <span
-          className={cn(
-            'font-display text-[1.2rem] font-semibold sm:text-[1.65rem] lg:text-[2rem]',
-            dark ? 'text-gold' : 'text-ink',
-          )}
-        >
-          <CountUp value={stat.value} prefix={stat.prefix} suffix={stat.suffix} />
-        </span>
-      </span>
-      <span className={cn('mt-4 max-w-[12rem] text-sm leading-relaxed font-bold sm:text-base', dark ? 'text-white/75' : 'text-ink-500')}>
-        {stat.label[lang]}
-      </span>
-    </div>
-  );
-}
-
 export function StatsSection({ lang, stats, variant = 'band', title, description }: StatsSectionProps) {
   if (variant === 'band') {
     return (
-      <section aria-labelledby="impact-title" className="relative isolate overflow-hidden bg-ink py-16 text-white lg:py-24">
-        <div className="container-x grid items-center gap-10 lg:grid-cols-12 lg:gap-12">
-          <Reveal className="lg:col-span-4">
-            <h2 id="impact-title" className={cn(headingClass, 'text-white')}>
+      <PulseStats
+        dir={localeMeta[lang].dir}
+        heading={
+          <Reveal>
+            <h2 id="impact-title" className={cn(headingClass, 'flex items-center gap-4 text-white')}>
+              {/* A live monitor's beat beside the title */}
+              <span aria-hidden="true" className="relative grid size-3.5 shrink-0 place-items-center">
+                <span className="absolute inset-0 animate-pulse-ring rounded-full bg-gold/60" />
+                <span className="relative size-2.5 rounded-full bg-gold" />
+              </span>
               {title}
             </h2>
           </Reveal>
-          <ul className="grid grid-cols-3 gap-3 sm:gap-8 lg:col-span-8">
-            {stats.map((stat, i) => (
-              <li key={stat.id}>
-                <RingStat stat={stat} lang={lang} tone="dark" delay={i * 0.18} />
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
+        }
+        stats={stats.map((s) => ({ id: s.id, value: s.value, prefix: s.prefix, suffix: s.suffix, label: s.label[lang] }))}
+      />
     );
   }
 

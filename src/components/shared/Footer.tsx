@@ -4,7 +4,7 @@ import type { Locale } from '@/i18n/config';
 import type { Dictionary } from '@/dictionaries';
 import { siteConfig } from '@/config/site';
 import { clinics } from '@/data/clinics';
-import { specialties } from '@/data/services';
+import { departments } from '@/data/services';
 import { localizedPath, navOrder, routes } from '@/lib/routes';
 import { telUrl, whatsappUrl } from '@/lib/utils';
 import { LogoFull } from './Logo';
@@ -62,7 +62,7 @@ export function Footer({ lang, dict }: { lang: Locale; dict: Dictionary }) {
             {dict.footer.specialties}
           </h2>
           <ul className="grid gap-2.5 text-sm">
-            {specialties.map((s) => (
+            {departments.map((s) => (
               <li key={s.id}>
                 <Link href={`${localizedPath(lang, routes.services)}#${s.id}`} className={linkClass}>
                   {s.title[lang]}

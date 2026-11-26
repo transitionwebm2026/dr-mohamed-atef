@@ -1,18 +1,13 @@
-import type { Localized } from '@/i18n/config';
-import type { Article, ArticleCategory } from './types';
+import { departmentTitles } from './services';
+import type { Article } from './types';
 
-export const articleCategories: Record<ArticleCategory, Localized> = {
-  anorectal: { ar: 'الشرج والمستقيم', en: 'Anorectal' },
-  colorectal: { ar: 'أورام القولون', en: 'Colorectal Cancer' },
-  breast: { ar: 'أورام الثدي', en: 'Breast Cancer' },
-  gastric: { ar: 'المعدة والكبد', en: 'Stomach & Liver' },
-  recovery: { ar: 'التحضير والتعافي', en: 'Prep & Recovery' },
-};
+/** Articles are filed under the three service departments (same names as on /services/). */
+export const articleCategories = departmentTitles;
 
 export const articles: Article[] = [
   {
     slug: 'breast-cancer-surgery-guide',
-    category: 'breast',
+    category: 'surgical-oncology',
     image: '/images/articles/breast-cancer-surgery-guide.webp',
     publishedAt: '2026-10-12',
     updatedAt: '2026-11-02',
@@ -70,7 +65,7 @@ export const articles: Article[] = [
   },
   {
     slug: 'colon-cancer-early-signs',
-    category: 'colorectal',
+    category: 'colorectal-surgery',
     image: '/images/articles/colon-cancer-early-signs.webp',
     publishedAt: '2026-10-20',
     updatedAt: '2026-11-05',
@@ -103,7 +98,7 @@ export const articles: Article[] = [
   },
   {
     slug: 'stomach-cancer-surgery',
-    category: 'gastric',
+    category: 'surgical-oncology',
     image: '/images/articles/stomach-cancer-surgery.webp',
     publishedAt: '2026-09-10',
     updatedAt: '2026-10-01',
@@ -135,7 +130,7 @@ export const articles: Article[] = [
   },
   {
     slug: 'liver-tumors-when-surgery',
-    category: 'gastric',
+    category: 'surgical-oncology',
     image: '/images/articles/liver-tumors-when-surgery.webp',
     publishedAt: '2026-08-22',
     updatedAt: '2026-09-05',
@@ -167,7 +162,7 @@ export const articles: Article[] = [
   },
   {
     slug: 'laser-hemorrhoids-treatment',
-    category: 'anorectal',
+    category: 'colorectal-surgery',
     image: '/images/articles/laser-hemorrhoids-treatment.webp',
     publishedAt: '2026-10-05',
     updatedAt: '2026-10-25',
@@ -198,8 +193,104 @@ export const articles: Article[] = [
     },
   },
   {
+    slug: 'gallstones-laparoscopic-cholecystectomy',
+    category: 'general-surgery',
+    image: '/images/procedures/laparoscopic-cholecystectomy.webp',
+    publishedAt: '2026-11-10',
+    updatedAt: '2026-11-18',
+    readTime: 5,
+    title: {
+      ar: 'حصوات المرارة: متى يكون استئصال المرارة بالمنظار هو الحل؟',
+      en: 'Gallstones: When Is Laparoscopic Gallbladder Removal the Answer?',
+    },
+    excerpt: {
+      ar: 'ليست كل حصوة مرارة تحتاج إلى جراحة. تعرّف على الأعراض التي تستدعي الاستئصال، ولماذا أصبح المنظار هو الخيار الأول.',
+      en: 'Not every gallstone needs surgery. Learn which symptoms call for removal, and why laparoscopy is now the first choice.',
+    },
+    body: {
+      ar: [
+        { heading: 'متى تحتاج المرارة إلى استئصال؟', text: 'الحصوات التي تُكتشف صدفة دون أعراض لا تحتاج غالبًا إلى جراحة. أما نوبات الألم المتكررة أعلى يمين البطن بعد الوجبات الدسمة، أو التهاب المرارة، أو انسداد القناة المرارية، أو التهاب البنكرياس الناتج عن الحصوات، فكلها تجعل الاستئصال هو العلاج الجذري.' },
+        { heading: 'لماذا المنظار؟', text: 'يتم استئصال المرارة عبر ثلاث أو أربع فتحات صغيرة بدل الجرح الكبير، مما يعني ألمًا أقل وندبات بسيطة وخروجًا من المستشفى في نفس اليوم أو اليوم التالي في أغلب الحالات.' },
+        { heading: 'بعد العملية', text: 'يعود معظم المرضى إلى أعمالهم المكتبية خلال أسبوع تقريبًا. ويتكيف الجهاز الهضمي مع غياب المرارة دون مشكلة، مع تقليل الدهون في الأسابيع الأولى.' },
+      ],
+      en: [
+        { heading: 'When does the gallbladder need removing?', text: 'Stones found by chance without symptoms usually do not need surgery. Recurrent upper-right abdominal pain after fatty meals, gallbladder inflammation, a blocked bile duct or stone-related pancreatitis, however, make removal the definitive treatment.' },
+        { heading: 'Why laparoscopy?', text: 'The gallbladder is removed through three or four small ports instead of a large incision — less pain, small scars and discharge the same or next day in most cases.' },
+        { heading: 'After the operation', text: 'Most patients return to desk work within about a week. Digestion adapts to life without a gallbladder without problems, with less fat in the first few weeks.' },
+      ],
+    },
+    takeaways: {
+      ar: ['الحصوات دون أعراض لا تحتاج غالبًا إلى جراحة', 'الألم المتكرر والالتهاب يستدعيان الاستئصال', 'المنظار يعني ألمًا أقل وعودة أسرع'],
+      en: ['Silent stones usually need no surgery', 'Recurrent pain and inflammation call for removal', 'Laparoscopy means less pain and a faster return'],
+    },
+  },
+  {
+    slug: 'hernia-repair-guide',
+    category: 'general-surgery',
+    image: '/images/procedures/hernia-repair.webp',
+    publishedAt: '2026-09-25',
+    updatedAt: '2026-10-08',
+    readTime: 5,
+    title: {
+      ar: 'الفتق: لماذا لا يختفي وحده، وكيف تختار طريقة الإصلاح؟',
+      en: 'Hernia: Why It Won’t Go Away on Its Own and How It Is Repaired',
+    },
+    excerpt: {
+      ar: 'أنواع الفتق الشائعة، وعلامات الخطر التي تستدعي التدخل العاجل، والفرق بين الإصلاح بالمنظار والجراحة المفتوحة.',
+      en: 'Common types of hernia, the warning signs that need urgent care, and the difference between laparoscopic and open repair.',
+    },
+    body: {
+      ar: [
+        { heading: 'ما هو الفتق؟', text: 'الفتق بروز لجزء من محتويات البطن عبر نقطة ضعف في جدار البطن، وأشهره الفتق الأربي والسري والفتق في مكان جراحة سابقة. ولا يلتئم الفتق من تلقاء نفسه، بل يميل إلى الكبر مع الوقت.' },
+        { heading: 'علامات تستدعي التدخل العاجل', text: 'إذا أصبح الفتق مؤلمًا بشدة أو صلبًا ولا يمكن إرجاعه، أو صاحبه قيء وانتفاخ، فقد يكون مختنقًا ويحتاج إلى جراحة عاجلة. لذلك يُفضل إصلاح الفتق بشكل مخطط قبل حدوث المضاعفات.' },
+        { heading: 'المنظار أم الجراحة المفتوحة؟', text: 'يتم الإصلاح غالبًا بشبكة طبية تقوي جدار البطن وتقلل فرص عودة الفتق. ونختار بين المنظار والجراحة المفتوحة حسب نوع الفتق وحجمه وحالة المريض، وفي الحالتين يخرج أغلب المرضى في نفس اليوم.' },
+      ],
+      en: [
+        { heading: 'What is a hernia?', text: 'A hernia is a bulge of abdominal contents through a weak point in the abdominal wall — most commonly inguinal, umbilical or at the site of a previous operation. A hernia does not heal by itself and tends to grow over time.' },
+        { heading: 'Warning signs that need urgent care', text: 'If a hernia becomes very painful or hard and cannot be pushed back, or comes with vomiting and bloating, it may be strangulated and need emergency surgery. Planned repair before complications is therefore preferred.' },
+        { heading: 'Laparoscopic or open?', text: 'Repair usually uses a medical mesh that strengthens the abdominal wall and lowers the chance of recurrence. We choose laparoscopic or open repair according to the hernia’s type and size and the patient’s condition; either way, most patients go home the same day.' },
+      ],
+    },
+    takeaways: {
+      ar: ['الفتق لا يختفي وحده ويكبر مع الوقت', 'الألم الشديد وعدم الارتداد علامة خطر', 'الشبكة الطبية تقلل فرص عودة الفتق'],
+      en: ['A hernia does not disappear and grows with time', 'Severe pain and an irreducible bulge are warning signs', 'Mesh repair lowers the chance of recurrence'],
+    },
+  },
+  {
+    slug: 'anal-fissure-treatment',
+    category: 'colorectal-surgery',
+    image: '/images/procedures/anal-fissure.webp',
+    publishedAt: '2026-08-30',
+    updatedAt: '2026-09-12',
+    readTime: 5,
+    title: {
+      ar: 'الشرخ الشرجي: هل يحتاج دائمًا إلى جراحة؟',
+      en: 'Anal Fissure: Does It Always Need Surgery?',
+    },
+    excerpt: {
+      ar: 'الفرق بين الشرخ الحاد والمزمن، وخطوات العلاج من تعديل الغذاء والمراهم إلى البوتوكس والجراحة الدقيقة.',
+      en: 'The difference between acute and chronic fissures, and the treatment steps from diet and ointments to Botox and precise surgery.',
+    },
+    body: {
+      ar: [
+        { heading: 'الشرخ الحاد والمزمن', text: 'الشرخ جرح صغير في بطانة فتحة الشرج يسبب ألمًا حادًا أثناء الإخراج وبعده، وقد يصاحبه نزيف بسيط. أغلب الشروخ الحادة تلتئم خلال أسابيع، أما إذا استمر الشرخ أكثر من ستة أسابيع فيُعتبر مزمنًا.' },
+        { heading: 'العلاج يبدأ دون جراحة', text: 'الألياف والسوائل لتليين البراز، والجلوس في ماء دافئ، والمراهم التي ترخي العضلة العاصرة تكفي لعلاج معظم الحالات. وفي بعض الحالات المزمنة يساعد حقن البوتوكس على التئام الشرخ.' },
+        { heading: 'متى تكون الجراحة هي الحل؟', text: 'عندما لا يستجيب الشرخ المزمن للعلاج، تُجرى جراحة دقيقة لإرخاء جزء محسوب من العضلة العاصرة الداخلية، بنسب نجاح عالية مع الحفاظ على التحكم الطبيعي.' },
+      ],
+      en: [
+        { heading: 'Acute and chronic fissures', text: 'A fissure is a small tear in the lining of the anus that causes sharp pain during and after bowel movements, sometimes with light bleeding. Most acute fissures heal within weeks; one that lasts more than six weeks is considered chronic.' },
+        { heading: 'Treatment starts without surgery', text: 'Fibre and fluids to soften the stool, warm sitz baths and ointments that relax the sphincter are enough for most cases. In some chronic fissures, Botox injection helps the tear heal.' },
+        { heading: 'When is surgery the answer?', text: 'When a chronic fissure does not respond, a precise operation relaxes a measured part of the internal sphincter, with high success rates while preserving normal continence.' },
+      ],
+    },
+    takeaways: {
+      ar: ['أغلب الشروخ الحادة تلتئم دون جراحة', 'الألياف والمراهم هي الخطوة الأولى', 'الجراحة الدقيقة للحالات المزمنة فقط'],
+      en: ['Most acute fissures heal without surgery', 'Fibre and ointments are the first step', 'Precise surgery is only for chronic cases'],
+    },
+  },
+  {
     slug: 'nutrition-after-cancer-surgery',
-    category: 'recovery',
+    category: 'surgical-oncology',
     image: '/images/articles/nutrition-after-cancer-surgery.webp',
     publishedAt: '2026-07-18',
     updatedAt: '2026-08-01',
@@ -231,7 +322,7 @@ export const articles: Article[] = [
   },
   {
     slug: 'before-cancer-surgery-checklist',
-    category: 'recovery',
+    category: 'surgical-oncology',
     image: '/images/articles/before-cancer-surgery-checklist.webp',
     publishedAt: '2026-07-02',
     updatedAt: '2026-07-20',
@@ -265,8 +356,10 @@ export const articles: Article[] = [
 
 export const featuredArticle: Article = articles.find((a) => a.featured) ?? articles[0]!;
 
-/** The six non-featured articles shown in the grid. */
-export const gridArticles: Article[] = articles.filter((a) => a.slug !== featuredArticle.slug).slice(0, 6);
+/** Every non-featured article, newest first — the filterable grid on /articles/. */
+export const gridArticles: Article[] = articles
+  .filter((a) => a.slug !== featuredArticle.slug)
+  .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
 
 export function getArticle(slug: string): Article | undefined {
   return articles.find((a) => a.slug === slug);

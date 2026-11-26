@@ -3,55 +3,33 @@
 import { useMemo, useState } from 'react';
 import { AnimatePresence, m } from 'framer-motion';
 import { ArticleCard, type ArticleCardData } from '@/components/shared/ArticleCard';
-import { cn } from '@/lib/utils';
+import { FilterPills } from '@/components/shared/FilterPills';
 
 interface ArticlesExplorerProps {
   articles: ArticleCardData[];
+  /** The three service departments, in order. */
   categories: { key: string; label: string }[];
   labels: { all: string; filter: string; empty: string; read: string };
 }
 
-/** 3 + 3 article grid with category filter pills. */
+/** Article grid with department filter pills. */
 export function ArticlesExplorer({ articles, categories, labels }: ArticlesExplorerProps) {
   const [active, setActive] = useState<string>('all');
 
-  const available = useMemo(
-    () => categories.filter((c) => articles.some((a) => a.categoryKey === c.key)),
-    [articles, categories],
+  const pills = useMemo(
+    () => [
+      { key: 'all', label: labels.all, count: articles.length },
+      ...categories
+        .map((c) => ({ ...c, count: articles.filter((a) => a.categoryKey === c.key).length }))
+        .filter((c) => c.count > 0),
+    ],
+    [articles, categories, labels.all],
   );
   const visible = active === 'all' ? articles : articles.filter((a) => a.categoryKey === active);
-  const pills = [{ key: 'all', label: labels.all }, ...available];
 
   return (
     <div>
-      <div role="group" aria-label={labels.filter} className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 pb-2 sm:mx-0 sm:flex-wrap sm:justify-center sm:px-0">
-        {pills.map((pill) => {
-          const selected = pill.key === active;
-          const count = pill.key === 'all' ? articles.length : articles.filter((a) => a.categoryKey === pill.key).length;
-          return (
-            <button
-              key={pill.key}
-              type="button"
-              aria-pressed={selected}
-              onClick={() => setActive(pill.key)}
-              className={cn(
-                'inline-flex h-11 shrink-0 items-center gap-2.5 rounded-full ps-5 pe-2 text-sm font-bold ring-1 transition duration-300 ring-inset',
-                selected ? 'bg-ink text-white ring-ink' : 'bg-white text-ink-700 ring-silver hover:ring-ink',
-              )}
-            >
-              {pill.label}
-              <span
-                className={cn(
-                  'grid size-7 place-items-center rounded-full text-xs',
-                  selected ? 'bg-gold text-ink' : 'bg-paper text-ink-700',
-                )}
-              >
-                {count}
-              </span>
-            </button>
-          );
-        })}
-      </div>
+      <FilterPills pills={pills} active={active} onSelect={setActive} label={labels.filter} />
 
       <AnimatePresence mode="wait" initial={false}>
         <m.ul

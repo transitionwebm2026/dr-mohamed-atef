@@ -3,8 +3,8 @@ import { CalendarCheck } from 'lucide-react';
 import { resolveLocale, type LangParams } from '@/i18n/server';
 import { getDictionary } from '@/dictionaries';
 import { heroImages } from '@/data/media';
-import { articleCategories, featuredArticle, gridArticles } from '@/data/articles';
-import type { ArticleCategory } from '@/data/types';
+import { featuredArticle, gridArticles } from '@/data/articles';
+import { departmentFilters } from '@/data/services';
 import { buildPageMetadata } from '@/lib/seo';
 import { buildBreadcrumbs } from '@/lib/breadcrumbs';
 import { articlesIndexSchema } from '@/lib/schema';
@@ -39,10 +39,7 @@ export default async function ArticlesPage({ params }: LangParams) {
 
   const featured = toArticleCard(featuredArticle, lang, dict);
   const grid = gridArticles.map((a) => toArticleCard(a, lang, dict));
-  const categories = (Object.keys(articleCategories) as ArticleCategory[]).map((key) => ({
-    key,
-    label: articleCategories[key][lang],
-  }));
+  const categories = departmentFilters(lang);
 
   return (
     <>

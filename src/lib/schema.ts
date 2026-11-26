@@ -3,7 +3,7 @@ import type { Locale } from '@/i18n/config';
 import { getDictionary } from '@/dictionaries';
 import { doctor } from '@/data/doctor';
 import { clinicOpeningHours, clinics } from '@/data/clinics';
-import { specialties } from '@/data/services';
+import { departmentProcedures, departments } from '@/data/services';
 import { doctorPortrait, ogImage } from '@/data/media';
 import { articleCategories } from '@/data/articles';
 import type { Article, Faq } from '@/data/types';
@@ -68,8 +68,8 @@ export function siteSchema(lang: Locale): JsonLdNode {
         areaServed: { '@type': 'City', name: lang === 'ar' ? 'القاهرة' : 'Cairo' },
         // Only real profile URLs (skip empty values and bare domain placeholders)
         sameAs: Object.values(siteConfig.social).filter((u) => /^https?:\/\/[^/]+\/.+/.test(u)),
-        availableService: specialties.flatMap((s) =>
-          s.procedures.map((p) => ({
+        availableService: departments.flatMap((d) =>
+          departmentProcedures(d).map((p) => ({
             '@type': 'MedicalProcedure',
             name: p.title[lang],
             procedureType: 'https://schema.org/SurgicalProcedure',
@@ -133,7 +133,7 @@ export function servicesSchema(lang: Locale, title: string, description: string)
     author: { '@id': PHYSICIAN_ID },
     mainEntity: {
       '@type': 'ItemList',
-      itemListElement: specialties.map((s, i) => ({
+      itemListElement: departments.map((s, i) => ({
         '@type': 'ListItem',
         position: i + 1,
         item: {
